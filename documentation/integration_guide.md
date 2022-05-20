@@ -47,20 +47,28 @@
 
     <!-- HCA SDK Set Configuration -->
     <script>
-      hcaSdk.setHcaSdkConfig(<clientId>, 
-                             [<knownAuthorities>], 
+      hcaSdk.setHcaSdkConfig(<clientId>,
+                             <displaySignInButton>, 
                              [<scopes>],
+                             [<knownAuthorities>],
                              <tenantId>,
                              <policyId>,
-                             <displaySignInButton>);
+                             );
     </script>
 
   </body>
 
 ```
 
-  The parameter <displaySignInButton> must have the value true to display the SignIn button false otherwise.
+  The parameter <displaySignInButton> must have the value true to display the SignIn button false otherwise with a default value set to true.
+  
+  The Parameter <scopes> has a default value set to ["https://onekeysdk.onmicrosoft.com/user/profile.basic"].
 
+  The Parameter <knownAuthorities> has a default value set to ["onekeysdk.b2clogin.com"].
+
+  The Parameter <tenantId> has a default value set to onekeysdk.
+
+  The Parameter <policyId> has a default value set to B2C_1A_HCA_UAT_SIGNUP_SIGNIN_REST_API_IDP.
 
   4. Define the return function to handle the login
 
@@ -92,12 +100,12 @@ The callback function below displays the ID of the logged user:
 
 5. Service calls for additional data
 
-  - hcaSdk.isLoggedAccount() : get if a user is logged in
+  - hcaSdk.isAccountLogged() : get if a user is logged in
     
 ```js
 
   function isLogged() {
-    console.log("isLogged:" + hcaSdk.isLoggedAccount());
+    console.log("isLogged:" + hcaSdk.isAccountLogged());
   }
 
 ```
