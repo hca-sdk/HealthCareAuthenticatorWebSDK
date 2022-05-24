@@ -49,10 +49,12 @@
     <script>
       hcaSdk.setHcaSdkConfig(<clientId>,
                              <displaySignInButton>, 
+                             <displaySignUpButton>,
                              [<scopes>],
                              [<knownAuthorities>],
                              <tenantId>,
                              <policyId>,
+                             <signupPolicyId>
                              );
     </script>
 
@@ -61,14 +63,19 @@
 ```
 
   The parameter <displaySignInButton> must have the value true to display the SignIn button false otherwise with a default value set to true.
-  
+
+  The parameter <displaySignUpButton> must have the value true to display the SignUp button false otherwise with a default value set to true.
+
   The Parameter <scopes> has a default value set to ["https://onekeysdk.onmicrosoft.com/user/profile.basic"].
 
   The Parameter <knownAuthorities> has a default value set to ["onekeysdk.b2clogin.com"].
 
-  The Parameter <tenantId> has a default value set to onekeysdk.
+  The Parameter <tenantId> has a default value set to "onekeysdk".
 
-  The Parameter <policyId> has a default value set to B2C_1A_HCA_UAT_SIGNUP_SIGNIN_REST_API_IDP.
+  The Parameter <policyId> has a default value set to "B2C_1A_HCA_UAT_SIGNUP_SIGNIN_REST_API_IDP".
+
+  The Parameter <signupPolicyId> has a default value set to "B2C_1A_HCAUATSIGNUPONLY".
+
 
   4. Define the return function to handle the login
 
