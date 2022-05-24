@@ -1,6 +1,4 @@
 // Update UI - Profile
-import {isAccountLogged} from "../../src/auth";
-
 function updateUIProfile(data) {
     const profileDiv = document.getElementById("profile-div");
 

@@ -9,12 +9,7 @@ If you want to change the connection settings :
 - Update the parameters in the javascript method :
 
 
-    hcaSdk.setHcaSdkConfig(<clientId>, 
-                           [<knownAuthorities>], 
-                           [<scopes>],
-                           <tenantId>,
-                           <policyId>,
-                           <displaySignInButton>);
+    hcaSdk.setHcaSdkConfig(<clientId>);
 
 
 ### Running the sample 
