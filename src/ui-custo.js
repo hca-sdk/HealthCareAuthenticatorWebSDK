@@ -35,10 +35,10 @@ function updateUILogin(account) {
     const cardDiv = document.getElementById("card-div");
 
     cardDiv.style.display = 'initial';
-    welcomeDiv.innerHTML = `UserId: ${account.userId}`;
+    welcomeDiv.innerHTML = `UserId: ${account.idTokenClaims.userId}`;
 
     const trustLevel = document.createElement('p');
-    trustLevel.innerHTML = "<strong>Trust Level: </strong>" + account.trustLevel;
+    trustLevel.innerHTML = "<strong>Trust Level: </strong>" + account.idTokenClaims.trustLevel;
 
     welcomeDiv.appendChild(trustLevel);
 
