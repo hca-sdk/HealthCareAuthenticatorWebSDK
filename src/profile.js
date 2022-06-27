@@ -1,3 +1,4 @@
+import * as msal from '@azure/msal-browser';
 import { myMSALObj, accountId, apiConfig, tokenRequest } from './auth.js';
 
 // Helper function to call API endpoint 
@@ -25,9 +26,23 @@ export async function getProfile(callback) {
     request.account = myMSALObj.getAccountByHomeId(accountId);
     if (request.account) {
         const response = await myMSALObj.acquireTokenSilent(request).catch(error => {
-            console.log(error);
-        })
-        const userProfileUrl = `${apiConfig.endpoint}/user`;
-        callAPI(userProfileUrl, response.idToken, callback);
+            if (error instanceof msal.InteractionRequiredAuthError) {
+                return myMSALObj.acquireTokenRedirect(request)
+                    .then(response => {
+                        // get access token from response
+                        // response.accessToken
+                    })
+                    .catch(error => {
+                        // handle error
+                        console.log(error);
+                    });
+            }
+
+        });
+
+        if (response) {
+            const userProfileUrl = `${apiConfig.endpoint}/user`;
+            callAPI(userProfileUrl, response.idToken, callback);
+        }
     }
 }
