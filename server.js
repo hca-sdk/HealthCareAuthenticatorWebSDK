@@ -3,7 +3,7 @@ const path = require('path');
 const app = express();
 const port = 4500;
 
-app.use("/dist", express.static(path.join(__dirname, "dist")));
+app.use("/dist", express.static(path.join(__dirname, "../dist")));
 app.use("/src", express.static(path.join(__dirname, "/sample-sdk-js/src")));
 
 
