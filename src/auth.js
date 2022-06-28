@@ -46,7 +46,7 @@ export function setHcaSdkConfig(clientId, displaySignInButton = true, displaySig
     knownAuthorities =  ["auth.onekeyconnect.com"], tenantDomain = "auth.onekeyconnect.com",
     policyId = "B2C_1A_HCA_SIGNUP_SIGNIN_REST_API_IDP", signupPolicyId="B2C_1A_HCASIGNUPONLY",
     apimSubscriptionKey="***REMOVED***",
-    apiBasePath="https://apim-prod-westeu-onekey.azure-api.net/api") {
+    apiBasePath="https://api.healthcaresdks.com/api") {
 
     msalConfig.auth.clientId = clientId;
     msalConfig.auth.knownAuthorities = knownAuthorities.slice();
