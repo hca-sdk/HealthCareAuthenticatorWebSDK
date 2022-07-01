@@ -23,6 +23,11 @@ export let msalConfig = {
 };
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
+export let loginRequest = {
+    scopes: []
+};
+
+// Add here scopes for id token to be used at MS Identity Platform endpoints.
 export let tokenRequest = {
     scopes: [],
     forceRefresh: false // Set this to "true" to skip a cached token and go to the server to get a new token
@@ -32,8 +37,7 @@ export let tokenRequest = {
 export let signUpFlowRequest = {
     scopes: [],
     authority: ""
-  };
-
+};
 
 // Add here the endpoints for API services you would like to use.
 export let apiConfig = {
@@ -55,6 +59,9 @@ export function setHcaSdkConfig(clientId, displaySignInButton = true, displaySig
     const authority = "https://" +  knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
     msalConfig.auth.authority = authority;
  
+    // Login request
+    loginRequest.scopes = scopes.slice();
+
     // Token request
     tokenRequest.scopes = scopes.slice();
 
@@ -111,18 +118,16 @@ export function handleResponse(response) {
             }
         }
     }
-
 }
 
 export async function signIn() {
-    myMSALObj.loginRedirect();
+    myMSALObj.loginRedirect(loginRequest);
 }
 
 export function signOut() {
     const currentAcc = myMSALObj.getAccountByHomeId(accountId);
     myMSALObj.logout(currentAcc);
 }
-
 
 export function handleTokenResponse(response) {
     if (response !== null) {
