@@ -1,7 +1,8 @@
 // calback function to handle login and accessToken
 export let loginCallBack;
 export let tokenCallBack;
-
+export let cancelCallBack;
+export let errorCallBack;
 
 export function addSignInButton() {
     const signInBtn = document.createElement("button");
@@ -29,6 +30,14 @@ export function setLoginCallBack(callback) {
 
 export function setTokenCallBack(callback) {
     tokenCallBack = callback;
+}
+
+export function setCancelCallBack(callback) {
+    cancelCallBack = callback;
+}
+
+export function setErrorCallBack(callback) {
+    errorCallBack = callback;
 }
 
 export function addSignUpButton() {

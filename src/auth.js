@@ -1,6 +1,13 @@
 import * as msal from '@azure/msal-browser';
-import { addSignInButton, addSignUpButton, loginCallBack, tokenCallBack, toggleSignInButton, toggleSignUpButton } from './ui.js';
-
+import {
+    addSignInButton,
+    addSignUpButton,
+    loginCallBack,
+    tokenCallBack,
+    toggleSignInButton,
+    toggleSignUpButton,
+    cancelCallBack, errorCallBack
+} from './ui.js';
 
 export let signInType;
 export let accountId = "";
@@ -45,11 +52,15 @@ export let apiConfig = {
     endpoint: ""
 };
 
-export function setHcaSdkConfig(clientId, displaySignInButton = true, displaySignUpButton = true,
-    scopes = ["https://auth.onekeyconnect.com/user/profile.basic"],
-    knownAuthorities =  ["auth.onekeyconnect.com"], tenantDomain = "auth.onekeyconnect.com",
-    policyId = "B2C_1A_HCA_SIGNUP_SIGNIN_REST_API_IDP", signupPolicyId="B2C_1A_HCASIGNUPONLY",
-    apimSubscriptionKey="***REMOVED***",
+export function setHcaSdkConfig(clientId, 
+    displaySignInButton = true, 
+    displaySignUpButton = true,
+    scopes = ["https://auth.onekeyconnect.com/x/profile.basic"],
+    knownAuthorities =  ["auth.onekeyconnect.com"], 
+    tenantDomain = "auth.onekeyconnect.com",
+    policyId = "b2c_1a_hca_signup_signin", 
+    signupPolicyId="b2c_1a_hca_signuponly",
+    apimSubscriptionKey="",
     apiBasePath="https://api.healthcaresdks.com/api") {
 
     msalConfig.auth.clientId = clientId;
@@ -74,9 +85,22 @@ export function setHcaSdkConfig(clientId, displaySignInButton = true, displaySig
     myMSALObj = new msal.PublicClientApplication(msalConfig);
  
     // Register Callbacks for Redirect flow
-     myMSALObj.handleRedirectPromise().then(handleResponse).catch(err => {
-        console.error(err);
-    });
+    myMSALObj
+        .handleRedirectPromise()
+        .then(handleResponse)
+        .catch(err => {
+            if (err.message && err.message.indexOf("AADB2C90091") > -1) {
+                if (cancelCallBack !== undefined) {
+                    cancelCallBack();
+                    return;
+                }
+            }
+            if (errorCallBack !== undefined) {
+                errorCallBack(err);
+            } else {
+                console.log(err);
+            }
+        });
 
     // Api config
     apiConfig.subscriptionKey = apimSubscriptionKey;

@@ -13,7 +13,9 @@ ONEKEY HCA SDK JS is a javascript library to connect to OneKey HCA
 
 - In a command prompt, run  `cd sdk-js`
 
-- In a command prompt, run `../node_modules/.bin/webpack --config webpack.config.js`
+- In a command prompt, run `npx webpack --config webpack.config.js`
+
+
 
 the library is buit in the `/dist` directory.
 
