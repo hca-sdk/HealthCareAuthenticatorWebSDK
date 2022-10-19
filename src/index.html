@@ -63,7 +63,7 @@
     
 
     <!-- HCA importing SDK script -->
-    <script type="text/javascript" src="https://onekeystaticdata.azureedge.net/hca/v1/onekey-hca-sdk.js"></script>
+    <script type="text/javascript" src="https://static.healthcaresdks.com/hca/v1/onekey-hca-sdk.js"></script>
 
     <!-- UI Customization of demo application-->
     <script type="text/javascript" src="../src/ui-custo.js"></script>
@@ -77,6 +77,12 @@
         
         // HCA Set callback function to handle access Token                       
         hcaSdk.setTokenCallBack(updateUIToken);
+
+        // HCA Set callback function to handle cancel action
+        hcaSdk.setCancelCallBack(onCancel);
+
+        // HCA Set callback function to handle errors
+        hcaSdk.setErrorCallBack(onError);
 
     </script>
 

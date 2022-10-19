@@ -65,3 +65,11 @@ function updateUIToken(response) {
 
     accessTokenDiv.appendChild(scopes);
 }
+
+function onCancel() {
+    console.log("cancelled");
+}
+
+function onError(err) {
+    console.log(err);
+}
