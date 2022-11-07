@@ -41,7 +41,32 @@ export async function getProfile(callback) {
         });
 
         if (response) {
-            const userProfileUrl = `${apiConfig.endpoint}/user`;
+            const userProfileUrl = `${apiConfig.endpoint}/profile`;
+            callAPI(userProfileUrl, response.idToken, callback);
+        }
+    }
+}
+
+export async function getAccount(callback) {
+    let request = tokenRequest
+    request.account = myMSALObj.getAccountByHomeId(accountId);
+    if (request.account) {
+        const response = await myMSALObj.acquireTokenSilent(request).catch(error => {
+            if (error instanceof msal.InteractionRequiredAuthError) {
+                return myMSALObj.acquireTokenRedirect(request)
+                    .then(response => {
+                        // get access token from response
+                        // response.accessToken
+                    })
+                    .catch(error => {
+                        // handle error
+                        console.log(error);
+                    });
+            }
+        });
+
+        if (response) {
+            const userProfileUrl = `${apiConfig.endpoint}/account`;
             callAPI(userProfileUrl, response.idToken, callback);
         }
     }

@@ -61,7 +61,7 @@ export function setHcaSdkConfig(clientId,
     policyId = "b2c_1a_hca_signup_signin", 
     signupPolicyId="b2c_1a_hca_signuponly",
     apimSubscriptionKey="",
-    apiBasePath="https://api.healthcaresdks.com/api") {
+    apiBasePath="https://api.healthcaresdks.com/api/hca/user/me") {
 
     msalConfig.auth.clientId = clientId;
     msalConfig.auth.knownAuthorities = knownAuthorities.slice();
@@ -104,7 +104,7 @@ export function setHcaSdkConfig(clientId,
 
     // Api config
     apiConfig.subscriptionKey = apimSubscriptionKey;
-    apiConfig.endpoint = apiBasePath + "/hca";
+    apiConfig.endpoint = apiBasePath;
 
      if (displaySignInButton) {
          addSignInButton();

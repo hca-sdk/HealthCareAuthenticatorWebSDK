@@ -7,9 +7,9 @@ app.use("/dist", express.static(path.join(__dirname, "../dist")));
 app.use("/src", express.static(path.join(__dirname, "/sample-sdk-js/src")));
 
 
-// Set up a route for index.html.
+// Set up a route for ignore-index.html.
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname + '/sample-sdk-js/src/index.html'));
+    res.sendFile(path.join(__dirname + '/sample-sdk-js/src/ignore-index.html'));
 });
 
 // Start the server.
