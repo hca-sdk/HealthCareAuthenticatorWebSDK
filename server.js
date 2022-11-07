@@ -5,9 +5,9 @@ const port = 8080;
 
 app.use("/src", express.static(path.join(__dirname, "src")));
 
-// Set up a route for index.html.
+// Set up a route for ignore-index.html.
 app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname + '/src/index.html'));
+    res.sendFile(path.join(__dirname + '/src/ignore-index.html'));
 });
 
 // Start the server.
