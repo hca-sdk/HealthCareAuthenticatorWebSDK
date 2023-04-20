@@ -4,14 +4,13 @@
 ## To install and integrate the HCA SDK within a website or JavaScript app
 
 
-1. Add HCA SDK – The library can be loaded directly from our CDN. You can also download and host it by yourself. Just append the following line of code inside your HTML template. We recommend to place it at the end of the body tag to avoid blocking the website initial rendering. For example:
+1. Add HCA SDK &ndash; The library can be loaded directly from our CDN. You can also download and host it by yourself. Just append the following line of code inside your HTML template. We recommend to place it at the end of the body tag to avoid blocking the website initial rendering. For example:
 
 
 ```html
 
   <body>
-
-
+  
     <script src="https://static.healthcaresdks.com/hca/v1/onekey-hca-sdk.js"></script>
 
   </body>
@@ -47,41 +46,42 @@
 
     <!-- HCA SDK Set Configuration -->
     <script>
-      hcaSdk.setHcaSdkConfig(<clientId>,
-                             <displaySignInButton>, 
-                             <displaySignUpButton>,
-                             [<scopes>],
-                             [<knownAuthorities>],
-                             <tenantDomain>,
-                             <policyId>,
-                             <signupPolicyId>,
-                             <apimSubscriptionKey>,
-                             <apiBasePath>
-                             );
+      hcaSdk.setHcaSdkConfig(
+        <clientId>,
+        <displaySignInButton>, 
+        <displaySignUpButton>,
+        [<scopes>],
+        [<knownAuthorities>],
+        <tenantDomain>,
+        <policyId>,
+        <signupPolicyId>,
+        <apimSubscriptionKey>,
+        <apiBasePath>
+      );
     </script>
 
   </body>
 
 ```
-  The parameter `<clientId>` must have be filled with the value provided during registration.
+  The parameter `&lt;clientId&gt;` must have be filled with the value provided during registration.
 
-  The parameter `<displaySignInButton>` must have the value true to display the SignIn button false otherwise with a default value set to true.
+  The parameter `&lt;displaySignInButton&gt;` must have the value true to display the SignIn button false otherwise with a default value set to true.
 
-  The parameter `<displaySignUpButton>` must have the value true to display the SignUp button false otherwise with a default value set to true.
+  The parameter `&lt;displaySignUpButton&gt;` must have the value true to display the SignUp button false otherwise with a default value set to true.
 
-  The Parameter `<scopes>` has a default value set to ["https://auth.onekeyconnect.com/user/profile.basic"].
+  The Parameter `&lt;scopes&gt;` is an array and has a default value set to ["https://auth.onekeyconnect.com/user/profile.basic"].
 
-  The Parameter `<knownAuthorities>` has a default value set to ["auth.onekeyconnect.com"].
+  The Parameter `&lt;knownAuthorities&gt;` is an array and has a default value set to ["auth.onekeyconnect.com"].
 
-  The Parameter `<tenantDomain>` has a default value set to "auth.onekeyconnect.com".
+  The Parameter `&lt;tenantDomain&gt;` has a default value set to "auth.onekeyconnect.com".
 
-  The Parameter `<policyId>` has a default value set to "B2C_1A_HCA_SIGNUP_SIGNIN_REST_API_IDP".
+  The Parameter `&lt;policyId&gt;` has a default value set to "B2C_1A_HCA_SIGNUP_SIGNIN".
 
-  The Parameter `<signupPolicyId>` has a default value set to "B2C_1A_HCASIGNUPONLY".
+  The Parameter `&lt;signupPolicyId&gt;` has a default value set to "B2C_1A_HCASIGNUPONLY".
 
-  The Parameter `<apimSubscriptionKey>` has a default value.  Do not change it.
+  The Parameter `&lt;apimSubscriptionKey&gt;` has a default value. *Do not change it*.
 
-  The Parameter `<apiBasePath>` has a default value.  Do not change it.
+  The Parameter `&lt;apiBasePath&gt;` has a default value. *Do not change it*.
 
 
   4. Define the return function to handle the login
@@ -119,7 +119,7 @@ The callback function below displays the ID of the logged user:
 ```js
 
   function isLogged() {
-    console.log("isLogged:" + hcaSdk.isAccountLogged());
+    console.log("isLogged: " + hcaSdk.isAccountLogged());
   }
 
 ```
