@@ -116,7 +116,7 @@ export function setHcaSdkConfig(clientId,
 }
 
 export function handleResponse(response) {
-    if (response !== null) {
+    if (response !== null && response.account != null) {
         accountId = response.account.homeAccountId;
         myMSALObj.setActiveAccount(response.account);
         toggleSignInButton();
