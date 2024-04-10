@@ -10,7 +10,7 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@azure/msal-browser": "~2.22.1",
+    "@azure/msal-browser": "3.11.0",
     "bluebird": "~3.7.2"
   },
   "devDependencies": {

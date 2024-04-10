@@ -52,24 +52,30 @@ export let apiConfig = {
     endpoint: ""
 };
 
-export function setHcaSdkConfig(clientId, 
-    displaySignInButton = true, 
+export async function setHcaSdkConfig(clientId,
+    displaySignInButton = true,
     displaySignUpButton = true,
     scopes = ["https://auth.onekeyconnect.com/x/profile.basic"],
-    knownAuthorities =  ["auth.onekeyconnect.com"], 
+    knownAuthorities = ["auth.onekeyconnect.com"],
     tenantDomain = "auth.onekeyconnect.com",
-    policyId = "b2c_1a_hca_signup_signin", 
-    signupPolicyId="b2c_1a_hca_signuponly",
-    apimSubscriptionKey="",
-    apiBasePath="https://api.healthcaresdks.com/api/hca/user/me") {
+    policyId = "b2c_1a_hca_signup_signin",
+    signupPolicyId = "b2c_1a_hca_signuponly",
+    apimSubscriptionKey = "",
+    apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
+    errorRedirectUrl = "") {
 
+    // Set the global variables
     msalConfig.auth.clientId = clientId;
     msalConfig.auth.knownAuthorities = knownAuthorities.slice();
 
     //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
-    const authority = "https://" +  knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
+    const authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
     msalConfig.auth.authority = authority;
- 
+
+    // Api config
+    apiConfig.subscriptionKey = apimSubscriptionKey;
+    apiConfig.endpoint = apiBasePath;
+
     // Login request
     loginRequest.scopes = scopes.slice();
 
@@ -77,45 +83,81 @@ export function setHcaSdkConfig(clientId,
     tokenRequest.scopes = scopes.slice();
 
     // SignUp request
-    const signupAuthority = "https://" +  knownAuthorities[0] + "/" + tenantDomain + "/" + signupPolicyId;
+    const signupAuthority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + signupPolicyId;
     signUpFlowRequest.authority = signupAuthority;
-    signUpFlowRequest.scopes = scopes.slice();   
+    signUpFlowRequest.scopes = scopes.slice();
 
-    // Create the main myMSALObj instance
-    myMSALObj = new msal.PublicClientApplication(msalConfig);
- 
-    // Register Callbacks for Redirect flow
-    myMSALObj
-        .handleRedirectPromise()
-        .then(handleResponse)
-        .catch(err => {
-            if (err.message && err.message.indexOf("AADB2C90091") > -1) {
-                if (cancelCallBack !== undefined) {
-                    cancelCallBack();
-                    return;
-                }
-            }
-            if (errorCallBack !== undefined) {
-                errorCallBack(err);
-            } else {
-                console.log(err);
-            }
-        });
+    // Display buttons
+    if (displaySignInButton) {
+        addSignInButton();
+    }
 
-    // Api config
-    apiConfig.subscriptionKey = apimSubscriptionKey;
-    apiConfig.endpoint = apiBasePath;
-
-     if (displaySignInButton) {
-         addSignInButton();
-     }
-
-     if (displaySignUpButton) {
+    if (displaySignUpButton) {
         addSignUpButton();
+    }
+    
+    // Check for SSO authentication & expired Magic Link
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    const verifier = url.searchParams.get("verifier");
+    const error = url.searchParams.get("error");
+    const errorDescription = url.searchParams.get("error_description");
+
+    if (error == "expired" && errorDescription) {
+        if(errorRedirectUrl){
+            window.location.href = errorRedirectUrl;
+        }
+    } else if (code && verifier) {
+        const tokenRequest = {
+            code: code,
+            scopes: scopes,
+            codeVerifier: verifier,
+        };
+        myMSALObj = new msal.PublicClientApplication(msalConfig);
+        await myMSALObj.initialize();
+        await myMSALObj.acquireTokenByCode(tokenRequest)
+            .then((response)=>{
+                handleResponse(response);
+                setTimeout(() => {window.location.href = "/" }, 1000);
+            })
+            .catch(err => {
+                if (err.message && err.message.indexOf("AADB2C90091") > -1) {
+                    if (cancelCallBack !== undefined) {
+                        cancelCallBack();
+                        return;
+                    }
+                }
+                if (errorCallBack !== undefined) {
+                    errorCallBack(err);
+                } else {
+                    console.log(err);
+                }
+            });
+    } else {
+        // Create the main myMSALObj instance
+        myMSALObj = new msal.PublicClientApplication(msalConfig);
+        await myMSALObj.initialize();
+        // Register Callbacks for Redirect flow
+        await myMSALObj
+            .handleRedirectPromise()
+            .then(handleResponse)
+            .catch(err => {
+                if (err.message && err.message.indexOf("AADB2C90091") > -1) {
+                    if (cancelCallBack !== undefined) {
+                        cancelCallBack();
+                        return;
+                    }
+                }
+                if (errorCallBack !== undefined) {
+                    errorCallBack(err);
+                } else {
+                    console.log(err);
+                }
+            });
     }
 }
 
-export function handleResponse(response) {
+export async function handleResponse(response) {
     if (response && response.account) {
         accountId = response.account.homeAccountId;
         myMSALObj.setActiveAccount(response.account);
@@ -164,7 +206,7 @@ export function handleTokenResponse(response) {
 export function getAccessTokenSilent() {
     let request = tokenRequest
     request.account = myMSALObj.getAccountByHomeId(accountId);
-    myMSALObj.acquireTokenSilent(request).then(handleTokenResponse).catch(error => {
+    myMSALObj.acquireTokenSilent(request).then((handleTokenResponse)).catch(error => {
         console.log(error);
     })
 }
