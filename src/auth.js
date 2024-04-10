@@ -113,47 +113,46 @@ export async function setHcaSdkConfig(clientId,
             scopes: scopes,
             codeVerifier: verifier,
         };
-        myMSALObj = new msal.PublicClientApplication(msalConfig);
-        await myMSALObj.initialize();
-        await myMSALObj.acquireTokenByCode(tokenRequest)
-            .then((response)=>{
-                handleResponse(response);
-                setTimeout(() => {window.location.href = "/" }, 1000);
-            })
-            .catch(err => {
-                if (err.message && err.message.indexOf("AADB2C90091") > -1) {
-                    if (cancelCallBack !== undefined) {
-                        cancelCallBack();
-                        return;
-                    }
+        try {
+            myMSALObj = new msal.PublicClientApplication(msalConfig);
+            await myMSALObj.initialize();
+            const response = await myMSALObj.acquireTokenByCode(tokenRequest);
+            handleResponse(response);
+            setTimeout(() => {window.location.href = "/" }, 1000);
+        } catch (err) {
+            if (err.message && err.message.indexOf("AADB2C90091") > -1) {
+                if (cancelCallBack !== undefined) {
+                    cancelCallBack();
+                    return;
                 }
-                if (errorCallBack !== undefined) {
-                    errorCallBack(err);
-                } else {
-                    console.log(err);
-                }
-            });
+            }
+            if (errorCallBack !== undefined) {
+                errorCallBack(err);
+            } else {
+                console.log(err);
+            }
+        }
     } else {
-        // Create the main myMSALObj instance
-        myMSALObj = new msal.PublicClientApplication(msalConfig);
-        await myMSALObj.initialize();
-        // Register Callbacks for Redirect flow
-        await myMSALObj
-            .handleRedirectPromise()
-            .then(handleResponse)
-            .catch(err => {
-                if (err.message && err.message.indexOf("AADB2C90091") > -1) {
-                    if (cancelCallBack !== undefined) {
-                        cancelCallBack();
-                        return;
-                    }
+        try {
+            // Create the main myMSALObj instance
+            myMSALObj = new msal.PublicClientApplication(msalConfig);
+            await myMSALObj.initialize();
+            // Register Callbacks for Redirect flow
+            const response = await myMSALObj.handleRedirectPromise();
+            handleResponse(response);
+        } catch (err) {
+            if (err.message && err.message.indexOf("AADB2C90091") > -1) {
+                if (cancelCallBack !== undefined) {
+                    cancelCallBack();
+                    return;
                 }
-                if (errorCallBack !== undefined) {
-                    errorCallBack(err);
-                } else {
-                    console.log(err);
-                }
-            });
+            }
+            if (errorCallBack !== undefined) {
+                errorCallBack(err);
+            } else {
+                console.log(err);
+            }
+        }
     }
 }
 
@@ -203,12 +202,15 @@ export function handleTokenResponse(response) {
     }
 }
 
-export function getAccessTokenSilent() {
-    let request = tokenRequest
-    request.account = myMSALObj.getAccountByHomeId(accountId);
-    myMSALObj.acquireTokenSilent(request).then((handleTokenResponse)).catch(error => {
+export async function getAccessTokenSilent() {
+    try {
+        let request = tokenRequest;
+        request.account = myMSALObj.getAccountByHomeId(accountId);
+        const response = await myMSALObj.acquireTokenSilent(request);
+        handleTokenResponse(response);
+    } catch (error) {
         console.log(error);
-    })
+    }
 }
 
 export function isAccountLogged() {
