@@ -6,13 +6,15 @@ export let errorCallBack;
 
 export function addSignInButton() {
     const signInBtn = document.createElement("button");
-    signInBtn.id="SignIn";
+    signInBtn.id = "SignIn";
     signInBtn.setAttribute("onclick", "hcaSdk.signIn();");
     signInBtn.setAttribute('class', "btn btn-dark")
     signInBtn.innerHTML = "Sign In";
 
     const signInDiv = document.getElementById("hca_signin");
-    signInDiv.appendChild(signInBtn);
+    if (signInDiv) {
+        signInDiv.appendChild(signInBtn);
+    }
 }
 
 export function toggleSignInButton() {
@@ -42,13 +44,15 @@ export function setErrorCallBack(callback) {
 
 export function addSignUpButton() {
     const signUpBtn = document.createElement("button");
-    signUpBtn.id="SignUp";
+    signUpBtn.id = "SignUp";
     signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
     signUpBtn.setAttribute('class', "btn btn-secondary")
     signUpBtn.innerHTML = "Sign Up";
 
     const signUpDiv = document.getElementById("hca_signup");
-    signUpDiv.appendChild(signUpBtn);
+    if (signUpDiv) {
+        signUpDiv.appendChild(signUpBtn);
+    }
 }
 
 export function toggleSignUpButton() {
