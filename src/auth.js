@@ -64,6 +64,21 @@ export async function setHcaSdkConfig(clientId,
     apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
     errorRedirectUrl = "") {
 
+    // decode state
+    let state = url.searchParams("state")
+    if (state) {
+        try {
+            state = atob(state)
+            try {
+                state = JSON.parse(state)
+            } catch (err) {
+                console.log("could not parse state")
+            }
+        } catch (err) {
+            console.log("could not decode state")
+        }
+    }
+
     // Set the global variables
     msalConfig.auth.clientId = clientId;
     msalConfig.auth.knownAuthorities = knownAuthorities.slice();
@@ -95,16 +110,21 @@ export async function setHcaSdkConfig(clientId,
     if (displaySignUpButton) {
         addSignUpButton();
     }
-    
+
     // Check for SSO authentication & expired Magic Link
     const url = new URL(window.location.href);
     const code = url.searchParams.get("code");
-    const verifier = url.searchParams.get("verifier");
     const error = url.searchParams.get("error");
     const errorDescription = url.searchParams.get("error_description");
 
-    if (error == "expired" && errorDescription) {
-        if(errorRedirectUrl){
+    // lookup verifier both in query and state
+    let verifier = url.searchParams.get("verifier");
+    if (!verifier && state && state.verifier) {
+        verifier = state.verifier
+    }
+
+    if (error && error == "expired" && errorDescription) {
+        if (errorRedirectUrl) {
             window.location.href = errorRedirectUrl;
         }
     } else if (code && verifier) {
@@ -118,7 +138,7 @@ export async function setHcaSdkConfig(clientId,
             await myMSALObj.initialize();
             const response = await myMSALObj.acquireTokenByCode(tokenRequest);
             handleResponse(response);
-            setTimeout(() => {window.location.href = "/" }, 1000);
+            setTimeout(() => { window.location.href = "/" }, 1000);
         } catch (err) {
             if (err.message && err.message.indexOf("AADB2C90091") > -1) {
                 if (cancelCallBack !== undefined) {
