@@ -64,21 +64,6 @@ export async function setHcaSdkConfig(clientId,
     apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
     errorRedirectUrl = "") {
 
-    // decode state
-    let state = url.searchParams("state")
-    if (state) {
-        try {
-            state = atob(state)
-            try {
-                state = JSON.parse(state)
-            } catch (err) {
-                console.log("could not parse state")
-            }
-        } catch (err) {
-            console.log("could not decode state")
-        }
-    }
-
     // Set the global variables
     msalConfig.auth.clientId = clientId;
     msalConfig.auth.knownAuthorities = knownAuthorities.slice();
@@ -113,6 +98,22 @@ export async function setHcaSdkConfig(clientId,
 
     // Check for SSO authentication & expired Magic Link
     const url = new URL(window.location.href);
+
+    // decode state
+    let state = url.searchParams("state")
+    if (state) {
+        try {
+            state = atob(state)
+            try {
+                state = JSON.parse(state)
+            } catch (err) {
+                console.log("could not parse state")
+            }
+        } catch (err) {
+            console.log("could not decode state")
+        }
+    }
+
     const code = url.searchParams.get("code");
     const error = url.searchParams.get("error");
     const errorDescription = url.searchParams.get("error_description");
