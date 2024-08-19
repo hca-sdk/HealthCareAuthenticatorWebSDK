@@ -100,7 +100,7 @@ export async function setHcaSdkConfig(clientId,
     const url = new URL(window.location.href);
 
     // decode state
-    let state = url.searchParams("state")
+    let state = url.searchParams.get("state")
     if (state) {
         try {
             state = atob(state)
