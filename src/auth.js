@@ -97,10 +97,11 @@ export async function setHcaSdkConfig(clientId,
     }
 
     // Check for SSO authentication & expired Magic Link
-    const url = new URL(window.location.href);
+    const searchParams = new URL(window.location.href).searchParams;
+    const hashParams = new URLSearchParams(window.location.hash)
 
     // decode state
-    let state = url.searchParams.get("state")
+    let state = searchParams.get("state") || hashParams.get("state")
     if (state) {
         try {
             state = atob(state)
@@ -114,12 +115,12 @@ export async function setHcaSdkConfig(clientId,
         }
     }
 
-    const code = url.searchParams.get("code");
-    const error = url.searchParams.get("error");
-    const errorDescription = url.searchParams.get("error_description");
+    const code = searchParams.get("code") || hashParams.get("code");
+    const error = searchParams.get("error") || hashParams.get("error");
+    const errorDescription = searchParams.get("error_description") || hashParams.get("error_description");
 
     // lookup verifier both in query and state
-    let verifier = url.searchParams.get("verifier");
+    let verifier = searchParams.get("verifier") || hashParams.get("verifier");
     if (!verifier && state && state.verifier) {
         verifier = state.verifier
     }
