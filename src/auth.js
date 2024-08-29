@@ -98,7 +98,7 @@ export async function setHcaSdkConfig(clientId,
 
     // Check for SSO authentication & expired Magic Link
     const searchParams = new URL(window.location.href).searchParams;
-    const hashParams = new URLSearchParams(window.location.hash)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
 
     // decode state
     let state = searchParams.get("state") || hashParams.get("state")
