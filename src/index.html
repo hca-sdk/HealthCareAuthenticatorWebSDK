@@ -124,6 +124,9 @@
             hcaSdk.setLocaleParams('en-GB');
           }
         });
+
+        // HCA Set callback function to handle before logout. This callback function should return a promise which resolve a boolean value
+        hcaSdk.setBeforeSignOutCallback(() => confirm('Do you really want to signout'));
     </script>
 
 </body>
