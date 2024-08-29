@@ -120,7 +120,7 @@ export async function setHcaSdkConfig(clientId,
     const errorDescription = searchParams.get("error_description") || hashParams.get("error_description");
 
     // lookup verifier local stroage, query and state
-    let verifier = localStorage.get("pkce_code_verifier")
+    let verifier = localStorage.getItem("pkce_code_verifier")
     if (!verifier && ( searchParams.get("verifier") || hashParams.get("verifier") ) ) {
         verifier = searchParams.get("verifier") || hashParams.get("verifier") 
     }
