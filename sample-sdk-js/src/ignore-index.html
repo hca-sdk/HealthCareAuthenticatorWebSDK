@@ -72,6 +72,9 @@
         // HCA Set Configuration - Parameters to be replaced
         hcaSdk.setHcaSdkConfig("clientId");
 
+        // HCA Set locale params for login / signup redirect content      
+        hcaSdk.setLocaleParams('fr-FR')
+
         // HCA Set callback function to handle login                       
         hcaSdk.setLoginCallBack(updateUILogin);
         

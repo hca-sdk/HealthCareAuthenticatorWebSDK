@@ -67,7 +67,7 @@ export async function setHcaSdkConfig(clientId,
     // Set the global variables
     msalConfig.auth.clientId = clientId;
     msalConfig.auth.knownAuthorities = knownAuthorities.slice();
-
+    
     //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
     const authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
     msalConfig.auth.authority = authority;
@@ -251,4 +251,11 @@ export function isAccountLogged() {
 
 export async function signUp() {
     myMSALObj.loginRedirect(signUpFlowRequest);
+}
+
+export async function setLocaleParams(locale) {
+    if (typeof locale == 'string' && !!locale) {
+        loginRequest.extraQueryParameters = { ui_locales: locale, locale };
+        signUpFlowRequest.extraQueryParameters = { ui_locales: locale, locale };
+    }
 }
