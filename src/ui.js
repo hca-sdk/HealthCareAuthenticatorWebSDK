@@ -3,6 +3,7 @@ export let loginCallBack;
 export let tokenCallBack;
 export let cancelCallBack;
 export let errorCallBack;
+export let beforeSignOutCallback;
 
 let signInLabel = 'Sign In'
 let signOutLabel = 'Sign Out'
@@ -80,6 +81,14 @@ export function toggleSignUpButton(loggedIn = false) {
     }
     signUpDiv.appendChild(signUpBtn)
     
+}
+/**
+ * @param {() => Promise<boolean>} callback: This callback need to return a Promise which resolve a boolean value. If true --> proceed signout. If false --> keep loggedIn
+ */
+
+
+export function setBeforeSignOutCallback(callback) {
+   beforeSignOutCallback = callback;
 }
 
 function updateLabels() {

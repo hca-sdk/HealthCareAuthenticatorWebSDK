@@ -87,7 +87,7 @@
 
         // HCA Set callback function to handle login                       
         hcaSdk.setLoginCallBack(updateUILogin);
-        
+
         // HCA Set callback function to handle access Token                       
         hcaSdk.setTokenCallBack(updateUIToken);
 
@@ -100,6 +100,8 @@
         // Init custom HCA label
         registerLocale();
 
+        // HCA Set callback function to handle before logout. This callback function should return a promise which resolve a boolean value
+        hcaSdk.setBeforeSignOutCallback(() => confirm('Do you really want to signout'));
     </script>
 
 </body>

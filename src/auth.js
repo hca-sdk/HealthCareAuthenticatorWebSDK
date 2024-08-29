@@ -4,6 +4,7 @@ import {
     tokenCallBack,
     toggleSignInButton,
     toggleSignUpButton,
+    beforeSignOutCallback,
     cancelCallBack, errorCallBack
 } from './ui.js';
 
@@ -221,7 +222,15 @@ export async function signIn() {
     myMSALObj.loginRedirect(loginRequest);
 }
 
-export function signOut() {
+export async function signOut() {
+    let allowSignOut = true
+    if (typeof beforeSignOutCallback == 'function') {
+        allowSignOut = await beforeSignOutCallback()
+    }
+
+    if (!allowSignOut) {
+        return
+    }
     const currentAcc = myMSALObj.getAccountByHomeId(accountId);
     myMSALObj.logout(currentAcc);
 }
