@@ -77,7 +77,7 @@
 
         // HCA Set callback function to handle login                       
         hcaSdk.setLoginCallBack(updateUILogin);
-        
+
         // HCA Set callback function to handle access Token                       
         hcaSdk.setTokenCallBack(updateUIToken);
 
@@ -87,6 +87,8 @@
         // HCA Set callback function to handle errors
         hcaSdk.setErrorCallBack(onError);
 
+        // HCA Set Labels for sign in, sign up, sign out
+        hcaSdk.setLabels('Sign In with OneKey', 'Sign Up with OneKey', 'Sign Out from OneKey');
     </script>
 
 </body>
