@@ -4,16 +4,21 @@ export let tokenCallBack;
 export let cancelCallBack;
 export let errorCallBack;
 
+let signInLabel = 'Sign In'
+let signOutLabel = 'Sign Out'
+let signUpLabel = 'Sign Up'
+let isToggledSignIn = false
+
 export function addSignInButton() {
     const signInBtn = document.createElement("button");
     signInBtn.id = "SignIn";
     signInBtn.setAttribute("onclick", "hcaSdk.signIn();");
     signInBtn.setAttribute('class', "btn btn-dark")
-    signInBtn.innerHTML = "Sign In";
-
+    signInBtn.innerHTML = signInLabel;
     const signInDiv = document.getElementById("hca_signin");
     if (signInDiv) {
         signInDiv.appendChild(signInBtn);
+        isToggledSignIn = false;
     }
 }
 
@@ -22,7 +27,8 @@ export function toggleSignInButton() {
     if (signInButton) {
         signInButton.setAttribute("onclick", "hcaSdk.signOut();");
         signInButton.setAttribute('class', "btn btn-success")
-        signInButton.innerHTML = "Sign Out";
+        signInButton.innerHTML = signOutLabel;
+        isToggledSignIn = true;
     }
 }
 
@@ -42,12 +48,26 @@ export function setErrorCallBack(callback) {
     errorCallBack = callback;
 }
 
+/**
+ * 
+ * @param {string | undefined} signIn: SignIn label
+ * @param {string | undefined} signUp: SignUp label
+ * @param {string | undefined} signOut: SignOut label
+ */
+
+export function setLabels(signIn = signInLabel, signUp = signUpLabel, signOut = signOutLabel) {
+    signInLabel = signIn
+    signUpLabel = signUp
+    signOutLabel = signOut
+    updateLabels()
+}
+
 export function addSignUpButton() {
     const signUpBtn = document.createElement("button");
     signUpBtn.id = "SignUp";
     signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
     signUpBtn.setAttribute('class', "btn btn-secondary")
-    signUpBtn.innerHTML = "Sign Up";
+    signUpBtn.innerHTML = signUpLabel;
 
     const signUpDiv = document.getElementById("hca_signup");
     if (signUpDiv) {
@@ -59,5 +79,19 @@ export function toggleSignUpButton() {
     const signUpButton = document.getElementById("SignUp");
     if (signUpButton) {
         signUpButton.remove();
+    }
+}
+
+function updateLabels() {
+    const signInBtn = document.querySelector('#hca_signin > #SignIn')
+    if (signInBtn && !isToggledSignIn) {
+        signInBtn.textContent = (signInLabel)
+    } else if (signInBtn && isToggledSignIn) {
+        signInBtn.textContent = (signOutLabel)
+    }
+
+    const signUpBtn = document.querySelector('#hca_signup > #SignUp')
+    if (signUpBtn) {
+        signUpBtn.textContent = (signUpLabel)
     }
 }
