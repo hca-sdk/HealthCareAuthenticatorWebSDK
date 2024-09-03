@@ -5,7 +5,9 @@ import {
     toggleSignInButton,
     toggleSignUpButton,
     beforeSignOutCallback,
-    cancelCallBack, errorCallBack
+    cancelCallBack, 
+    errorCallBack,
+    loginPopup
 } from './ui.js';
 
 export let signInType;
@@ -64,7 +66,8 @@ export async function setHcaSdkConfig(clientId,
     apimSubscriptionKey = "",
     apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
     errorRedirectUrl = "",
-    redirectURL = "", // This URL must be configured in portal 
+    redirectURL = "", // This URL must be configured in portal
+    isLoginPopup = false, 
     ) {
 
     // Set the global variables
@@ -98,6 +101,9 @@ export async function setHcaSdkConfig(clientId,
     // Set display buttons variables
     displaySignIn = displaySignInButton
     displaySignUp = displaySignUpButton
+
+    // Set login Popup
+    loginPopup = isLoginPopup
 
     // Check for SSO authentication & expired Magic Link
     const searchParams = new URL(window.location.href).searchParams;
@@ -231,9 +237,14 @@ export async function signOut() {
     if (!allowSignOut) {
         return
     }
-    const currentAcc = myMSALObj.getAccountByHomeId(accountId);
-    myMSALObj.logout(currentAcc);
 }
+
+export async function signInPopup() {
+    const loginResponse = await myMSALObj.loginPopup(loginRequest);
+    handleResponse(loginResponse);
+    return loginResponse
+}
+
 
 export function handleTokenResponse(response) {
     if (response !== null) {

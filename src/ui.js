@@ -4,6 +4,7 @@ export let tokenCallBack;
 export let cancelCallBack;
 export let errorCallBack;
 export let beforeSignOutCallback;
+export let loginPopup;
 
 let signInLabel = 'Sign In'
 let signOutLabel = 'Sign Out'
@@ -15,8 +16,8 @@ export function toggleSignInButton(loggedIn = false) {
     signInBtn.id = "SignIn";
 
     if (!loggedIn) {
-        signInBtn.setAttribute("onclick", "hcaSdk.signIn();");
-        signInBtn.setAttribute('class', "btn btn-dark");
+        signInBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signInPopup();" :"hcaSdk.signIn();");
+        signInBtn.setAttribute('class',  "btn btn-dark");
         signInBtn.textContent = signInLabel;
         isToggledSignIn = false
     } else {
