@@ -62,7 +62,9 @@ export async function setHcaSdkConfig(clientId,
     signupPolicyId = "b2c_1a_hca_signuponly",
     apimSubscriptionKey = "",
     apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
-    errorRedirectUrl = "") {
+    errorRedirectUrl = "",
+    redirectURL = "", // This URL must be configured in portal 
+    ) {
 
     // Set the global variables
     msalConfig.auth.clientId = clientId;
@@ -71,6 +73,11 @@ export async function setHcaSdkConfig(clientId,
     //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
     const authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
     msalConfig.auth.authority = authority;
+
+    if (redirectURL) {
+        msalConfig.auth.redirectUri = redirectURL;
+        msalConfig.auth.navigateToLoginRequestUrl = false;
+    }
 
     // Api config
     apiConfig.subscriptionKey = apimSubscriptionKey;
@@ -143,7 +150,10 @@ export async function setHcaSdkConfig(clientId,
             await myMSALObj.initialize();
             const response = await myMSALObj.acquireTokenByCode(tokenRequest);
             handleResponse(response);
-            setTimeout(() => { window.location.href = "/" }, 1000);
+            setTimeout(() => {
+                // To clean the url with query params / hash
+                window.history.pushState(null, null, window.location.pathname); 
+            }, 500);
         } catch (err) {
             if (err.message && err.message.indexOf("AADB2C90091") > -1) {
                 if (cancelCallBack !== undefined) {
