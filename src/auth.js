@@ -201,7 +201,7 @@ export async function handleResponse(response) {
         myMSALObj.setActiveAccount(response.account);
         toggleButtons(true)
         if (loginCallBack !== undefined) {
-            loginCallBack(response.account);
+            loginCallBack(response.account, response.state);
         }
     } else {
         // need to call getAccount here?
@@ -299,6 +299,13 @@ export async function setLocaleParams(locale) {
     }
 }
 
+export async function setStateParams(state) {
+    if (typeof state == 'string' && !!state) {
+        loginRequest.state = state;
+        signUpFlowRequest.state = state;
+    }
+}
+
 function toggleButtons(isLoggedIn = false) {
     if (displaySignIn) {
         toggleSignInButton(isLoggedIn);
@@ -307,3 +314,4 @@ function toggleButtons(isLoggedIn = false) {
         toggleSignUpButton(isLoggedIn);
     }
 }
+
