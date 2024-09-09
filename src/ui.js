@@ -9,26 +9,26 @@ let signOutLabel = 'Sign Out'
 let signUpLabel = 'Sign Up'
 let isToggledSignIn = false
 
-export function addSignInButton() {
+export function toggleSignInButton(loggedIn = false) {
     const signInBtn = document.createElement("button");
     signInBtn.id = "SignIn";
-    signInBtn.setAttribute("onclick", "hcaSdk.signIn();");
-    signInBtn.setAttribute('class', "btn btn-dark")
-    signInBtn.innerHTML = signInLabel;
+
+    if (!loggedIn) {
+        signInBtn.setAttribute("onclick", "hcaSdk.signIn();");
+        signInBtn.setAttribute('class', "btn btn-dark");
+        signInBtn.textContent = signInLabel;
+        isToggledSignIn = false
+    } else {
+        signInBtn.setAttribute("onclick", "hcaSdk.signOut();");
+        signInBtn.setAttribute('class', "btn btn-success");
+        signInBtn.textContent = signOutLabel
+        isToggledSignIn = true
+    }
+
     const signInDiv = document.getElementById("hca_signin");
     if (signInDiv) {
-        signInDiv.appendChild(signInBtn);
-        isToggledSignIn = false;
-    }
-}
-
-export function toggleSignInButton() {
-    const signInButton = document.getElementById("SignIn");
-    if (signInButton) {
-        signInButton.setAttribute("onclick", "hcaSdk.signOut();");
-        signInButton.setAttribute('class', "btn btn-success")
-        signInButton.innerHTML = signOutLabel;
-        isToggledSignIn = true;
+        signInDiv.textContent = "";
+        signInDiv.appendChild(signInBtn)
     }
 }
 
@@ -62,36 +62,36 @@ export function setLabels(signIn = signInLabel, signUp = signUpLabel, signOut = 
     updateLabels()
 }
 
-export function addSignUpButton() {
+export function toggleSignUpButton(loggedIn = false) {
+    const signUpDiv = document.getElementById("hca_signup");
+    if (!signUpDiv) {
+        return;
+    }
+    if (signUpDiv && loggedIn) {
+        signUpDiv.textContent = "";
+        return;
+    }
     const signUpBtn = document.createElement("button");
     signUpBtn.id = "SignUp";
-    signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
-    signUpBtn.setAttribute('class', "btn btn-secondary")
-    signUpBtn.innerHTML = signUpLabel;
-
-    const signUpDiv = document.getElementById("hca_signup");
-    if (signUpDiv) {
-        signUpDiv.appendChild(signUpBtn);
+    if (!loggedIn) {
+        signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
+        signUpBtn.setAttribute('class', "btn btn-secondary");
+        signUpBtn.textContent = signUpLabel;
     }
-}
-
-export function toggleSignUpButton() {
-    const signUpButton = document.getElementById("SignUp");
-    if (signUpButton) {
-        signUpButton.remove();
-    }
+    signUpDiv.appendChild(signUpBtn)
+    
 }
 
 function updateLabels() {
     const signInBtn = document.querySelector('#hca_signin > #SignIn')
     if (signInBtn && !isToggledSignIn) {
-        signInBtn.textContent = (signInLabel)
+        signInBtn.textContent = signInLabel;
     } else if (signInBtn && isToggledSignIn) {
-        signInBtn.textContent = (signOutLabel)
+        signInBtn.textContent = signOutLabel;
     }
 
     const signUpBtn = document.querySelector('#hca_signup > #SignUp')
     if (signUpBtn) {
-        signUpBtn.textContent = (signUpLabel)
+        signUpBtn.textContent = signUpLabel
     }
 }
