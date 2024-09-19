@@ -19,6 +19,6 @@ If you want to change the connection settings :
 ### Running the sample 
 - In a command prompt, run `npm start`
 
-- Navigate to http://localhost:4500 with the browser of your choice. (another port can be specified in the `server.js` file)
+- Navigate to http://localhost:8080 with the browser of your choice. (another port can be specified in the `server.js` file)
 
 - In the web page, click on the "Sign In" button to begin the authentication flow.

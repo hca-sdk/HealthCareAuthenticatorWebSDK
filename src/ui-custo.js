@@ -73,3 +73,30 @@ function onCancel() {
 function onError(err) {
     console.log(err);
 }
+
+const listLocale = ['en-GB', 'fr-FR', 'it-IT'];
+function registerLocale() {
+    const currentStorage = localStorage.getItem('locale');
+    if (currentStorage === 'fr-FR') {
+        hcaSdk.setLabels('Se connecter', "S'enregistrer", 'Déconnectez-vous');
+        hcaSdk.setLocaleParams('fr-FR')
+      } else if (currentStorage === 'it-IT') {
+        hcaSdk.setLabels('Accedi', 'Registrati', 'Esci');
+        hcaSdk.setLocaleParams('it-IT');
+      } else {
+        hcaSdk.setLabels('Sign in with Onekey', 'Sign up with Onekey', 'Sign out with Onekey');
+        hcaSdk.setLocaleParams('en-GB');
+      }
+
+    const countrySelect = document.querySelector("#country-select");
+    if (!countrySelect) {
+        return;
+    }
+    if (!!currentStorage && listLocale.includes(currentStorage)) {
+        countrySelect.value = currentStorage;
+    }
+    countrySelect.addEventListener('change', function (e) {
+        const newValue = e.target.value;
+        localStorage.setItem('locale', newValue)
+    })
+}
