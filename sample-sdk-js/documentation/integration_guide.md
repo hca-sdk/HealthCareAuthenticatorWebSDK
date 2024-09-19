@@ -56,7 +56,9 @@
         <policyId>,
         <signupPolicyId>,
         <apimSubscriptionKey>,
-        <apiBasePath>
+        <apiBasePath>,
+        <expiredUrl>,
+        <redirectUrl>
       );
     </script>
 
@@ -83,6 +85,9 @@
 
   The Parameter `&lt;apiBasePath&gt;` has a default value. *Do not change it*.
 
+  The Parameter `&lt;expiredUrl&gt;` could be filled with url link, which to be redirected to, when Magic-link has expired.
+
+  The Parameter `&lt;redirectUrl&gt;` could be filled with url link, which to be redirected to, after user logged in.
 
   4. Define the return function to handle the login
 
@@ -136,4 +141,19 @@ The callback function below displays the ID of the logged user:
      console.log(data);
   }
 
+```
+
+6. Customize button labels:
+  - hcaSdk.setLabels(<signInButtonLabel>, <signUpButtonLabel>, <signOutButtonLabel>): For customizing labels of sign in, sign-up and sign-out buttons
+
+```js
+  hca.setLabels('Sign-in', 'Sign-up', 'Sign-out')
+```
+
+7. Customize locale params:
+  - hcaSdk.setLocaleParams(<localeString>): allows to specify the language or regional settings (locale) for the HCA’s sign-in / sign-up page
+page
+
+```js
+  hca.setLocaleParams('en-GB')
 ```
