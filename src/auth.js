@@ -67,7 +67,8 @@ export async function setHcaSdkConfig(clientId,
     apimSubscriptionKey = "",
     apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
     errorRedirectUrl = "",
-    redirectURL = "", // This URL must be configured in portal
+    redirectURL = "", // This URL must be configured in portal,
+    postLogoutRedirectUri = "",
     isLoginPopup = false, 
     ) {
 
@@ -78,6 +79,10 @@ export async function setHcaSdkConfig(clientId,
     //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
     const authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
     msalConfig.auth.authority = authority;
+
+    if (postLogoutRedirectUri) {
+        msalConfig.auth.postLogoutRedirectUri = postLogoutRedirectUri;
+    }
 
     if (redirectURL) {
         msalConfig.auth.redirectUri = redirectURL;
