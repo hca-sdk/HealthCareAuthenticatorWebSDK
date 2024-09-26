@@ -65,46 +65,62 @@ export function setCustomButtonClass({signInClass = '', signUpClass = '', signOu
 }
 
 export function toggleSignInButton(loggedIn = false) {
-    const signInBtn = document.createElement("button");
-    signInBtn.id = "SignIn";
-
-    if (!loggedIn) {
-        signInBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signInPopup();" :"hcaSdk.signIn();");
-        signInBtn.setAttribute('class', signInCustomClass);
-        signInBtn.textContent = signInLabel;
-        isToggledSignIn = false
-    } else {
-        signInBtn.setAttribute("onclick", "hcaSdk.signOut();");
-        signInBtn.setAttribute('class', signOutCustomClass);
-        signInBtn.textContent = signOutLabel
-        isToggledSignIn = true
+    function createSignInBtnNode() {
+        const signInBtn = document.createElement("button");
+        signInBtn.id = "SignIn";
+    
+        if (!loggedIn) {
+            signInBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signInPopup();" :"hcaSdk.signIn();");
+            signInBtn.setAttribute('class',  signInCustomClass);
+            signInBtn.textContent = signInLabel;
+            isToggledSignIn = false
+        } else {
+            signInBtn.setAttribute("onclick", "hcaSdk.signOut();");
+            signInBtn.setAttribute('class', signOutCustomClass);
+            signInBtn.textContent = signOutLabel
+            isToggledSignIn = true
+        }
+        return signInBtn
     }
 
-    const signInDiv = document.getElementById("hca_signin");
-    if (signInDiv) {
-        signInDiv.textContent = "";
-        signInDiv.appendChild(signInBtn)
+    const signInDivs = document.querySelectorAll('#hca_signin');
+    if (signInDivs && signInDivs.length) {
+        signInDivs.forEach((node) => {
+            node.textContent = ''
+            node.appendChild(createSignInBtnNode())
+        })
         updateSignInLogo();
     }
 }
 
 export function toggleSignUpButton(loggedIn = false) {
-    const signUpDiv = document.getElementById("hca_signup");
-    if (!signUpDiv) {
+    const signUpDivs = document.querySelectorAll("#hca_signup");
+    
+    if (!signUpDivs || !signUpDivs.length) {
         return;
     }
-    if (signUpDiv && loggedIn) {
-        signUpDiv.textContent = "";
+
+    if (signUpDivs && loggedIn) {
+        signUpDivs.forEach(node => node.textContent = "");
         return;
     }
-    const signUpBtn = document.createElement("button");
-    signUpBtn.id = "SignUp";
-    if (!loggedIn) {
-        signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
-        signUpBtn.setAttribute('class', signUpCustomClass);
-        signUpBtn.textContent = signUpLabel;
+
+    function createSignUpNode() {
+        const signUpBtn = document.createElement("button");
+        signUpBtn.id = "SignUp";
+        if (!loggedIn) {
+            signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
+            signUpBtn.setAttribute('class', signUpCustomClass);
+            signUpBtn.textContent = signUpLabel;
+        }
+        return signUpBtn
     }
-    signUpDiv.appendChild(signUpBtn)
+    
+    signUpDivs.forEach((node) => {
+        node.textContent = "";
+        node.appendChild(createSignUpNode())
+    })
+    
 }
 /**
  * @param {() => Promise<boolean>} callback: This callback need to return a Promise which resolve a boolean value. If true --> proceed signout. If false --> keep loggedIn
@@ -116,17 +132,22 @@ export function setBeforeSignOutCallback(callback) {
 }
 
 function updateLabels() {
-    const signInBtn = document.querySelector('#hca_signin > #SignIn')
-    if (signInBtn && !isToggledSignIn) {
-        signInBtn.textContent = signInLabel;
+    const signInBtn = document.querySelectorAll('#hca_signin > #SignIn')
+    const signInOutLabel = isToggledSignIn ? signOutLabel : signInLabel
+    if (signInBtn && signInBtn.length) {
+        signInBtn.forEach((node) => {
+            node.textContent = signInOutLabel;
+        });
+    }
+    if (!isToggledSignIn) {
         updateSignInLogo();
-    } else if (signInBtn && isToggledSignIn) {
-        signInBtn.textContent = signOutLabel;
     }
 
-    const signUpBtn = document.querySelector('#hca_signup > #SignUp')
+    const signUpBtn = document.querySelectorAll('#hca_signup > #SignUp')
     if (signUpBtn) {
-        signUpBtn.textContent = signUpLabel
+        signUpBtn.forEach((node) => {
+            node.textContent = signUpLabel;
+        });
     }
 }
 
@@ -138,19 +159,25 @@ export function addStyles() {
 }
 
 function updateButtonSignIn() {
-    const signInBtn = document.querySelector("#hca_signin > #SignIn");
+    const signInBtns = document.querySelectorAll("#hca_signin > #SignIn");
 
-    if (signInBtn && !isToggledSignIn) {
-        signInBtn.setAttribute('class', signInCustomClass);
-    } else if (signInBtn && isToggledSignIn) {
-        signInBtn.setAttribute('class', signOutCustomClass);
+    if (signInBtns && signInBtns.length && !isToggledSignIn) {
+        signInBtns.forEach((node) => {
+            node.setAttribute('class', signInCustomClass)
+        })
+    } else if (signInBtns && signInBtns.length && isToggledSignIn) {
+        signInBtns.forEach((node) => {
+            node.setAttribute('class', signOutCustomClass);
+        })
     }
 }
 
 function updateButtonSignUp() {
-    const signUpBtn = document.querySelector("button#SignUp");
-    if (signUpBtn) {
-        signUpBtn.setAttribute('class', signUpCustomClass)
+    const signUpBtns = document.querySelectorAll("button#SignUp");
+    if (signUpBtns && signUpBtns.length) {
+        signUpBtns.forEach((node) => {
+            node.setAttribute('class', signUpCustomClass)
+        })
     }
 }
 
@@ -160,29 +187,37 @@ function updateButtonClasses() {
 }
 
 function updateSignInLogo() {
-    const signInBtn = document.querySelector("#hca_signin > #SignIn");
-    if (signInBtn && signInLogoUrl && !isToggledSignIn) {
-        // logo
-        let logoWrapper = signInBtn.querySelector('.hca-signIn-logo__wrapper');
-        if (!logoWrapper) {
-            logoWrapper = document.createElement('span');
-            logoWrapper.classList.add('hca-signIn-logo__wrapper')
-        }
-        const logoNode = document.createElement('img');
-        logoNode.src = signInLogoUrl;
-        logoNode.alt = 'signin-logo';
-        logoNode.classList = 'hca-signIn-logo';
-        logoNode.onerror = function()  {
-            this.style.display = 'none';
-            if (signInCustomClass.indexOf('with-logo') > -1) {
-                signInCustomClass.replace('with-logo', '');
-                updateButtonSignIn();
+    const signInBtns = document.querySelectorAll("#hca_signin > #SignIn");
+    if (signInBtns && signInBtns.length && signInLogoUrl && !isToggledSignIn) {
+        signInBtns.forEach((btnSignin) => {
+            let logoWrapper = btnSignin.querySelector('.hca-signIn-logo__wrapper');
+            // logo
+            if (!logoWrapper) {
+                logoWrapper = document.createElement('span');
+                logoWrapper.classList.add('hca-signIn-logo__wrapper')
             }
-        }
-        signInCustomClass += ' with-logo';
-        updateButtonSignIn();
-        logoWrapper.textContent = "";
-        logoWrapper.append(logoNode);
-        signInBtn.prepend(logoWrapper);
+            const logoNode = document.createElement('img');
+            logoNode.src = signInLogoUrl;
+            logoNode.alt = 'signin-logo';
+            logoNode.classList = 'hca-signIn-logo';
+            logoNode.onerror = function()  {
+                this.style.display = 'none';
+                if (signInCustomClass.indexOf('with-logo') > -1) {
+                    signInCustomClass.replace('with-logo', '');
+                    btnSignin.setAttribute('class', signInCustomClass);
+                }
+            }
+            
+            if (signInCustomClass.indexOf('with-logo') > -1) {
+                btnSignin.setAttribute('class', signInCustomClass);
+            } else {
+                signInCustomClass += ' with-logo';
+            }
+            
+            btnSignin.setAttribute('class', signInCustomClass);
+            logoWrapper.textContent = "";
+            logoWrapper.append(logoNode);
+            btnSignin.prepend(logoWrapper);
+        })
     }
 }
