@@ -221,3 +221,8 @@ function updateSignInLogo() {
         })
     }
 }
+
+export function displayActiveButtons() {
+    toggleSignInButton(isToggledSignIn)
+    toggleSignUpButton(isToggledSignIn)
+}
