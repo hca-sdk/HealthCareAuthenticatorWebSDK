@@ -237,6 +237,8 @@ export async function signOut() {
     if (!allowSignOut) {
         return
     }
+    const currentAcc = myMSALObj.getAccountByHomeId(accountId);
+    myMSALObj.logout(currentAcc);
 }
 
 export async function signInPopup() {
