@@ -286,6 +286,16 @@ export async function setLocaleParams(locale) {
     if (typeof locale == 'string' && !!locale) {
         loginRequest.extraQueryParameters = { ui_locales: locale, locale };
         signUpFlowRequest.extraQueryParameters = { ui_locales: locale, locale };
+        return;
+    }
+    
+    if (loginRequest.extraQueryParameters?.ui_locales) {
+        delete (loginRequest.extraQueryParameters.ui_locales);
+        delete (loginRequest.extraQueryParameters.locale);
+    }
+    if (signUpFlowRequest.extraQueryParameters?.ui_locales) {
+        delete (signUpFlowRequest.extraQueryParameters.ui_locales);
+        delete (signUpFlowRequest.extraQueryParameters.locale);
     }
 }
 
