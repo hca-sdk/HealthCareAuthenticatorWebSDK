@@ -15,6 +15,7 @@ let signUpCustomClass = 'hca-signUp btn btn-secondary'
 let signOutCustomClass = 'hca-signOut btn btn-success'
 let signInLogoUrl = ''
 let isToggledSignIn = false
+let isUseDefaultStyle = undefined
 
 export function setLoginCallBack(callback) {
     loginCallBack = callback;
@@ -49,6 +50,10 @@ export function setLabels(signIn = signInLabel, signUp = signUpLabel, signOut = 
 export function setLogoSignInButton(url) {
     signInLogoUrl = url
     updateSignInLogo()
+
+    if (typeof isUseDefaultStyle == 'undefined') {
+        addSignInBtnDefaultStyle()
+    }
 }
 
 export function setCustomButtonClass({signInClass = '', signUpClass = '', signOutClass = '', replacement = false}) {
@@ -62,6 +67,18 @@ export function setCustomButtonClass({signInClass = '', signUpClass = '', signOu
         signOutCustomClass += ' ' + signOutClass;
     }
     updateButtonClasses()
+}
+
+export function setDefaultBtnStyles(useDefaultStyle = false) {
+    isUseDefaultStyle = useDefaultStyle;
+    if (useDefaultStyle) {
+        addStyles();
+    } else {
+        const styleNode = document.querySelector('#hca-internal-style');
+        if (styleNode) {
+            styleNode.remove();
+        }
+    }
 }
 
 export function toggleSignInButton(loggedIn = false) {
@@ -151,11 +168,29 @@ function updateLabels() {
     }
 }
 
-export function addStyles() {
-    const styleNode = document.createElement('style');
-    styleNode.textContent = styles.signInBtnStyle + styles.signOutBtnStyle + styles.signUpBtnStyle
-
+export function addSignInBtnDefaultStyle() {
+    let styleNode = document.querySelector('#hca-internal-style');
+    if (styleNode) {
+        return;
+    }
+    styleNode = document.createElement('style');
+    styleNode.id = 'hca-internal-style';
+    styleNode.textContent = styles.signInBtnStyle;
     document.head.prepend(styleNode);
+}
+
+export function addStyles() {
+    let styleNode = document.querySelector('#hca-internal-style');
+    let isStyleNode = true
+    if (!styleNode) {
+        styleNode = document.createElement('style');
+        isStyleNode = false
+        styleNode.id = 'hca-internal-style';
+    }
+    styleNode.textContent = styles.signInBtnStyle + styles.signOutBtnStyle + styles.signUpBtnStyle;
+    if (!isStyleNode) {
+        document.head.prepend(styleNode);
+    }
 }
 
 function updateButtonSignIn() {

@@ -1,6 +1,5 @@
 import * as msal from '@azure/msal-browser';
 import {
-    addStyles,
     loginCallBack,
     tokenCallBack,
     toggleSignInButton,
@@ -110,10 +109,6 @@ export async function setHcaSdkConfig(clientId,
 
     // Set login Popup
     loginPopup = isLoginPopup
-
-    if (displaySignInButton || displaySignUpButton) {
-        addStyles();
-    }
 
     // Check for SSO authentication & expired Magic Link
     const searchParams = new URL(window.location.href).searchParams;
