@@ -7,7 +7,10 @@ import {
     beforeSignOutCallback,
     cancelCallBack, 
     errorCallBack,
-    loginPopup
+    loginPopup,
+    isSignedIn,
+    displaySignIn,
+    displaySignUp,
 } from './ui.js';
 
 export let signInType;
@@ -15,9 +18,6 @@ export let accountId = "";
 
 // Create the main myMSALObj instance
 export let myMSALObj;  // instantiation in setHcaSdkConfig
-
-let displaySignIn = false
-let displaySignUp = false
 
 // Config object to be passed to Msal on creation
 export let msalConfig = {
@@ -162,7 +162,7 @@ export async function setHcaSdkConfig(clientId,
                 window.history.pushState(null, null, window.location.pathname); 
             }, 500);
         } catch (err) {
-            toggleButtons();
+            setSignInUI();
             if (err.message && err.message.indexOf("AADB2C90091") > -1) {
                 if (cancelCallBack !== undefined) {
                     cancelCallBack();
@@ -184,7 +184,7 @@ export async function setHcaSdkConfig(clientId,
             const response = await myMSALObj.handleRedirectPromise();
             handleResponse(response);
         } catch (err) {
-            toggleButtons();
+            setSignInUI();
             if (err.message && err.message.indexOf("AADB2C90091") > -1) {
                 if (cancelCallBack !== undefined) {
                     cancelCallBack();
@@ -204,7 +204,7 @@ export async function handleResponse(response) {
     if (response && response.account) {
         accountId = response.account.homeAccountId;
         myMSALObj.setActiveAccount(response.account);
-        toggleButtons(true)
+        setSignInUI();
         if (loginCallBack !== undefined) {
             loginCallBack(response.account, response.state);
         }
@@ -213,19 +213,17 @@ export async function handleResponse(response) {
         const currentAccounts = myMSALObj.getAllAccounts();
         if (!currentAccounts || currentAccounts.length < 1) {
             // No account add ssoSilent here ?
-            toggleButtons();
         } else if (currentAccounts.length > 1) {
             // Add choose account code here
-            toggleButtons();
         } else if (currentAccounts.length === 1) {
             const activeAccount = currentAccounts[0];
             myMSALObj.setActiveAccount(activeAccount);
             accountId = activeAccount.homeAccountId;
-            toggleButtons(true);
             if (loginCallBack !== undefined) {
                 loginCallBack(activeAccount);
             }
         }
+        setSignInUI();
     }
 }
 
@@ -311,12 +309,17 @@ export async function setStateParams(state) {
     }
 }
 
-function toggleButtons(isLoggedIn = false) {
+function setSignInUI() {
+    isSignedIn = isAccountLogged();
+    toggleButtons();
+}
+
+function toggleButtons() {
     if (displaySignIn) {
-        toggleSignInButton(isLoggedIn);
+        toggleSignInButton();
     }
     if (displaySignUp) {
-        toggleSignUpButton(isLoggedIn);
+        toggleSignUpButton();
     }
 }
 

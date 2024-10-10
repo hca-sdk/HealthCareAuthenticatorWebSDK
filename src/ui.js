@@ -6,6 +6,9 @@ export let cancelCallBack;
 export let errorCallBack;
 export let beforeSignOutCallback;
 export let loginPopup;
+export let isSignedIn = false
+export let displaySignIn = false
+export let displaySignUp = false
 
 let signInLabel = 'Sign In'
 let signOutLabel = 'Sign Out'
@@ -14,7 +17,6 @@ let signInCustomClass = 'hca-signIn btn btn-dark'
 let signUpCustomClass = 'hca-signUp btn btn-secondary'
 let signOutCustomClass = 'hca-signOut btn btn-success'
 let signInLogoUrl = ''
-let isToggledSignIn = false
 let isUseDefaultStyle = undefined
 
 export function setLoginCallBack(callback) {
@@ -81,21 +83,19 @@ export function setDefaultBtnStyles(useDefaultStyle = false) {
     }
 }
 
-export function toggleSignInButton(loggedIn = false) {
+export function toggleSignInButton() {
     function createSignInBtnNode() {
         const signInBtn = document.createElement("button");
         signInBtn.id = "SignIn";
     
-        if (!loggedIn) {
+        if (!isSignedIn) {
             signInBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signInPopup();" :"hcaSdk.signIn();");
             signInBtn.setAttribute('class',  signInCustomClass);
             signInBtn.textContent = signInLabel;
-            isToggledSignIn = false
         } else {
             signInBtn.setAttribute("onclick", "hcaSdk.signOut();");
             signInBtn.setAttribute('class', signOutCustomClass);
             signInBtn.textContent = signOutLabel
-            isToggledSignIn = true
         }
         return signInBtn
     }
@@ -110,14 +110,14 @@ export function toggleSignInButton(loggedIn = false) {
     }
 }
 
-export function toggleSignUpButton(loggedIn = false) {
+export function toggleSignUpButton() {
     const signUpDivs = document.querySelectorAll("#hca_signup");
     
     if (!signUpDivs || !signUpDivs.length) {
         return;
     }
 
-    if (signUpDivs && loggedIn) {
+    if (signUpDivs && isSignedIn) {
         signUpDivs.forEach(node => node.textContent = "");
         return;
     }
@@ -125,7 +125,7 @@ export function toggleSignUpButton(loggedIn = false) {
     function createSignUpNode() {
         const signUpBtn = document.createElement("button");
         signUpBtn.id = "SignUp";
-        if (!loggedIn) {
+        if (!isSignedIn) {
             signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
             signUpBtn.setAttribute('class', signUpCustomClass);
             signUpBtn.textContent = signUpLabel;
@@ -150,13 +150,13 @@ export function setBeforeSignOutCallback(callback) {
 
 function updateLabels() {
     const signInBtn = document.querySelectorAll('#hca_signin > #SignIn')
-    const signInOutLabel = isToggledSignIn ? signOutLabel : signInLabel
+    const signInOutLabel = isSignedIn ? signOutLabel : signInLabel
     if (signInBtn && signInBtn.length) {
         signInBtn.forEach((node) => {
             node.textContent = signInOutLabel;
         });
     }
-    if (!isToggledSignIn) {
+    if (!isSignedIn) {
         updateSignInLogo();
     }
 
@@ -196,11 +196,11 @@ export function addStyles() {
 function updateButtonSignIn() {
     const signInBtns = document.querySelectorAll("#hca_signin > #SignIn");
 
-    if (signInBtns && signInBtns.length && !isToggledSignIn) {
+    if (signInBtns && signInBtns.length && !isSignedIn) {
         signInBtns.forEach((node) => {
             node.setAttribute('class', signInCustomClass)
         })
-    } else if (signInBtns && signInBtns.length && isToggledSignIn) {
+    } else if (signInBtns && signInBtns.length && isSignedIn) {
         signInBtns.forEach((node) => {
             node.setAttribute('class', signOutCustomClass);
         })
@@ -223,7 +223,7 @@ function updateButtonClasses() {
 
 function updateSignInLogo() {
     const signInBtns = document.querySelectorAll("#hca_signin > #SignIn");
-    if (signInBtns && signInBtns.length && signInLogoUrl && !isToggledSignIn) {
+    if (signInBtns && signInBtns.length && signInLogoUrl && !isSignedIn) {
         signInBtns.forEach((btnSignin) => {
             let logoWrapper = btnSignin.querySelector('.hca-signIn-logo__wrapper');
             // logo
@@ -258,6 +258,10 @@ function updateSignInLogo() {
 }
 
 export function displayActiveButtons() {
-    toggleSignInButton(isToggledSignIn)
-    toggleSignUpButton(isToggledSignIn)
+    if (displaySignIn) {
+        toggleSignInButton(isSignedIn)
+    }
+    if (displaySignUp) {
+        toggleSignUpButton(isSignedIn)
+    }
 }
