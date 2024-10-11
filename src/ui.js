@@ -126,7 +126,7 @@ export function toggleSignUpButton() {
         const signUpBtn = document.createElement("button");
         signUpBtn.id = "SignUp";
         if (!isSignedIn) {
-            signUpBtn.setAttribute("onclick", "hcaSdk.signUp();");
+            signUpBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signUpPopup();" : "hcaSdk.signUp();");
             signUpBtn.setAttribute('class', signUpCustomClass);
             signUpBtn.textContent = signUpLabel;
         }

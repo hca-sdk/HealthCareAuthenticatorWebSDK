@@ -250,6 +250,12 @@ export async function signInPopup() {
     return loginResponse
 }
 
+export async function signUpPopup() {
+    const signUpResponse = await myMSALObj.loginPopup(signUpFlowRequest);
+    handleResponse(signUpResponse);
+    return signUpResponse
+}
+
 
 export function handleTokenResponse(response) {
     if (response !== null) {
