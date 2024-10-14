@@ -72,6 +72,31 @@ export const signUpBtnStyle = `
     .hca-signUp:hover {
         background-color: #5a6268;
     }
+    .hca-signUp.with-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.25em;
+    }
+    .hca-signUp .hca-signUp-logo__wrapper {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        height: 100%;
+    }
+    .hca-signUp .hca-signUp-logo__wrapper::before {
+        content: '';
+        background-color: rgba(255, 255, 255, 0.1);
+        height: calc(100% + .375em * 2);
+        width: calc(100% + .75em * 2);
+        position: absolute;
+        left: -.75em;
+        top: -.375em;
+        border-radius: .25em 0 0 .25em;
+    }
+    .hca-signUp .hca-signUp-logo {
+        height: 1em;
+        width: auto;
+    }
 `;
 export const signOutBtnStyle = `
     .hca-signOut {
@@ -96,5 +121,30 @@ export const signOutBtnStyle = `
     }
     .hca-signOut:hover {
         background-color: #218838;
+    }
+    .hca-signOut.with-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.25em;
+    }
+    .hca-signOut .hca-signOut-logo__wrapper {
+        display: inline-flex;
+        position: relative;
+        align-items: center;
+        height: 100%;
+    }
+    .hca-signOut .hca-signOut-logo__wrapper::before {
+        content: '';
+        background-color: rgba(255, 255, 255, 0.1);
+        height: calc(100% + .375em * 2);
+        width: calc(100% + .75em * 2);
+        position: absolute;
+        left: -.75em;
+        top: -.375em;
+        border-radius: .25em 0 0 .25em;
+    }
+    .hca-signOut .hca-signOut-logo {
+        height: 1em;
+        width: auto;
     }
 `;

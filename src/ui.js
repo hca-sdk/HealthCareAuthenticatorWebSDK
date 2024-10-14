@@ -10,12 +10,43 @@ export let isSignedIn = false
 export let displaySignIn = false
 export let displaySignUp = false
 
-let signInLabel = 'Sign In'
-let signOutLabel = 'Sign Out'
-let signUpLabel = 'Sign Up'
+const customizeBtns = {
+    signIn: {
+        label: 'Sign In',
+        classList: 'hca-signIn btn btn-dark',
+        logo: {
+            wrapperClass: 'hca-signIn-logo__wrapper',
+            logoClass: 'hca-signIn-logo',
+            logoAlt: 'signin-logo',
+            url: ''
+        }
+    },
+    signUp: {
+        label: 'Sign Up',
+        classList: 'hca-signUp btn btn-secondary',
+        logo: {
+            wrapperClass: 'hca-signUp-logo__wrapper',
+            logoClass: 'hca-signUp-logo',
+            logoAlt: 'signup-logo',
+            url: ''
+        }
+    },
+    signOut: {
+        label: 'Sign Out',
+        classList: 'hca-signOut btn btn-success',
+        logo: {
+            wrapperClass: 'hca-signOut-logo__wrapper',
+            logoClass: 'hca-signOut-logo',
+            logoAlt: 'signout-logo',
+            url: ''
+        }
+    }
+}
+const signIn = customizeBtns.signIn;
+const signUp = customizeBtns.signUp;
+const signOut = customizeBtns.signOut;
+
 let signInCustomClass = 'hca-signIn btn btn-dark'
-let signUpCustomClass = 'hca-signUp btn btn-secondary'
-let signOutCustomClass = 'hca-signOut btn btn-success'
 let signInLogoUrl = ''
 let isUseDefaultStyle = undefined
 
@@ -42,31 +73,33 @@ export function setErrorCallBack(callback) {
 * @param {string | undefined} signOut: SignOut label
 */
 
-export function setLabels(signIn = signInLabel, signUp = signUpLabel, signOut = signOutLabel) {
-    signInLabel = signIn
-    signUpLabel = signUp
-    signOutLabel = signOut
+export function setLabels(signInLabel = signIn.label, signUpLabel = signUp.label, signOutLabel = signOut.label) {
+    signIn.label = signInLabel
+    signUp.label = signUpLabel
+    signOut.label = signOutLabel
     updateLabels()
 }
 
-export function setLogoSignInButton(url) {
-    signInLogoUrl = url
-    updateSignInLogo()
+export function setCustomLogoUrl(url) {
+    signIn.logo.url = url;
+    signUp.logo.url = url;
+    signOut.logo.url = url;
+    updateAllCustomLogo();
 
     if (typeof isUseDefaultStyle == 'undefined') {
-        addSignInBtnDefaultStyle()
+        addStyles()
     }
 }
 
 export function setCustomButtonClass({signInClass = '', signUpClass = '', signOutClass = '', replacement = false}) {
     if (replacement) {
-        signInCustomClass = signInClass;
-        signUpCustomClass = signUpClass;
-        signOutCustomClass = signOutClass;
+        signIn.classList = signInClass;
+        signUp.classList = signUpClass;
+        signOut.classList = signOutClass;
     } else {
-        signInCustomClass += ' ' + signInClass;
-        signUpCustomClass += ' ' + signUpClass;
-        signOutCustomClass += ' ' + signOutClass;
+        signIn.classList = signIn.classList + ' ' + signInClass;
+        signUp.classList = signUp.classList + ' ' + signUpClass;
+        signOut.classList = signOut.classList + ' ' + signOutClass;
     }
     updateButtonClasses()
 }
@@ -90,12 +123,12 @@ export function toggleSignInButton() {
     
         if (!isSignedIn) {
             signInBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signInPopup();" :"hcaSdk.signIn();");
-            signInBtn.setAttribute('class',  signInCustomClass);
-            signInBtn.textContent = signInLabel;
+            signInBtn.setAttribute('class',  signIn.classList);
+            signInBtn.textContent = signIn.label;
         } else {
             signInBtn.setAttribute("onclick", "hcaSdk.signOut();");
-            signInBtn.setAttribute('class', signOutCustomClass);
-            signInBtn.textContent = signOutLabel
+            signInBtn.setAttribute('class', signOut.classList);
+            signInBtn.textContent = signOut.label;
         }
         return signInBtn
     }
@@ -106,8 +139,8 @@ export function toggleSignInButton() {
             node.textContent = ''
             node.appendChild(createSignInBtnNode())
         })
-        updateSignInLogo();
     }
+    updateAllCustomLogo();
 }
 
 export function toggleSignUpButton() {
@@ -127,8 +160,8 @@ export function toggleSignUpButton() {
         signUpBtn.id = "SignUp";
         if (!isSignedIn) {
             signUpBtn.setAttribute("onclick", loginPopup ? "hcaSdk.signUpPopup();" : "hcaSdk.signUp();");
-            signUpBtn.setAttribute('class', signUpCustomClass);
-            signUpBtn.textContent = signUpLabel;
+            signUpBtn.setAttribute('class', signUp.classList);
+            signUpBtn.textContent = signUp.label;
         }
         return signUpBtn
     }
@@ -137,7 +170,7 @@ export function toggleSignUpButton() {
         node.textContent = "";
         node.appendChild(createSignUpNode())
     })
-    
+    updateAllCustomLogo();
 }
 /**
  * @param {() => Promise<boolean>} callback: This callback need to return a Promise which resolve a boolean value. If true --> proceed signout. If false --> keep loggedIn
@@ -150,33 +183,20 @@ export function setBeforeSignOutCallback(callback) {
 
 function updateLabels() {
     const signInBtn = document.querySelectorAll('#hca_signin > #SignIn')
-    const signInOutLabel = isSignedIn ? signOutLabel : signInLabel
+    const signInOutLabel = isSignedIn ? signOut.label : signIn.label
     if (signInBtn && signInBtn.length) {
         signInBtn.forEach((node) => {
             node.textContent = signInOutLabel;
         });
     }
-    if (!isSignedIn) {
-        updateSignInLogo();
-    }
 
     const signUpBtn = document.querySelectorAll('#hca_signup > #SignUp')
     if (signUpBtn) {
         signUpBtn.forEach((node) => {
-            node.textContent = signUpLabel;
+            node.textContent = signUp.label;
         });
     }
-}
-
-export function addSignInBtnDefaultStyle() {
-    let styleNode = document.querySelector('#hca-internal-style');
-    if (styleNode) {
-        return;
-    }
-    styleNode = document.createElement('style');
-    styleNode.id = 'hca-internal-style';
-    styleNode.textContent = styles.signInBtnStyle;
-    document.head.prepend(styleNode);
+    updateAllCustomLogo();
 }
 
 export function addStyles() {
@@ -198,11 +218,11 @@ function updateButtonSignIn() {
 
     if (signInBtns && signInBtns.length && !isSignedIn) {
         signInBtns.forEach((node) => {
-            node.setAttribute('class', signInCustomClass)
+            node.setAttribute('class', signIn.classList)
         })
     } else if (signInBtns && signInBtns.length && isSignedIn) {
         signInBtns.forEach((node) => {
-            node.setAttribute('class', signOutCustomClass);
+            node.setAttribute('class', signOut.classList);
         })
     }
 }
@@ -211,7 +231,7 @@ function updateButtonSignUp() {
     const signUpBtns = document.querySelectorAll("button#SignUp");
     if (signUpBtns && signUpBtns.length) {
         signUpBtns.forEach((node) => {
-            node.setAttribute('class', signUpCustomClass)
+            node.setAttribute('class', signUp.classList)
         })
     }
 }
@@ -221,39 +241,55 @@ function updateButtonClasses() {
     updateButtonSignUp(); 
 }
 
-function updateSignInLogo() {
+function updateBtnItemLogo(node, type) {
+    const btnTypeData = customizeBtns[type];
+    const logoAttrs = btnTypeData.logo;
+    if (!logoAttrs) {
+        return;
+    }
+    let logoWrapper = node.querySelector(`.${logoAttrs.wrapperClass}`);
+    if (!logoWrapper) {
+        logoWrapper = document.createElement('span');
+        logoWrapper.classList.add(logoAttrs.wrapperClass);
+    }
+
+    const logoNode = document.createElement('img');
+    logoNode.src = logoAttrs.url;
+    logoNode.alt = logoAttrs.alt;
+    logoNode.classList = logoAttrs.logoClass;
+    logoNode.onerror = function()  {
+        this.style.display = 'none';
+        if (btnTypeData.classList.indexOf('with-logo') > -1) {
+            btnTypeData.classList.replace('with-logo', '');
+            node.setAttribute('class', btnTypeData.classList);
+        }
+    }
+    if (btnTypeData.classList.indexOf('with-logo') > -1) {
+        node.setAttribute('class', btnTypeData.classList);
+    } else {
+        btnTypeData.classList = btnTypeData.classList + ' with-logo';
+    }
+    
+    node.setAttribute('class', btnTypeData.classList);
+    logoWrapper.textContent = "";
+    logoWrapper.append(logoNode);
+    node.prepend(logoWrapper);
+}
+
+function updateAllCustomLogo() {
     const signInBtns = document.querySelectorAll("#hca_signin > #SignIn");
-    if (signInBtns && signInBtns.length && signInLogoUrl && !isSignedIn) {
-        signInBtns.forEach((btnSignin) => {
-            let logoWrapper = btnSignin.querySelector('.hca-signIn-logo__wrapper');
-            // logo
-            if (!logoWrapper) {
-                logoWrapper = document.createElement('span');
-                logoWrapper.classList.add('hca-signIn-logo__wrapper')
-            }
-            const logoNode = document.createElement('img');
-            logoNode.src = signInLogoUrl;
-            logoNode.alt = 'signin-logo';
-            logoNode.classList = 'hca-signIn-logo';
-            logoNode.onerror = function()  {
-                this.style.display = 'none';
-                if (signInCustomClass.indexOf('with-logo') > -1) {
-                    signInCustomClass.replace('with-logo', '');
-                    btnSignin.setAttribute('class', signInCustomClass);
-                }
-            }
-            
-            if (signInCustomClass.indexOf('with-logo') > -1) {
-                btnSignin.setAttribute('class', signInCustomClass);
-            } else {
-                signInCustomClass += ' with-logo';
-            }
-            
-            btnSignin.setAttribute('class', signInCustomClass);
-            logoWrapper.textContent = "";
-            logoWrapper.append(logoNode);
-            btnSignin.prepend(logoWrapper);
-        })
+    if (signInBtns && signInBtns.length && signIn.logo.url && !isSignedIn) {
+        signInBtns.forEach((signInBtn) => updateBtnItemLogo(signInBtn, 'signIn'));
+    }
+
+    const signUpBtns = document.querySelectorAll("#hca_signup > #SignUp");
+    if (signUpBtns && signUpBtns.length && signUp.logo.url && !isSignedIn) {
+        signUpBtns.forEach((signUpBtn) => updateBtnItemLogo(signUpBtn, 'signUp'));
+    }
+
+    const signOutBtns = document.querySelectorAll("#hca_signin > #SignIn");
+    if (signOutBtns && signOutBtns.length && signOut.logo.url && isSignedIn) {
+        signOutBtns.forEach((signOutBtn) => updateBtnItemLogo(signOutBtn, 'signOut'));
     }
 }
 
