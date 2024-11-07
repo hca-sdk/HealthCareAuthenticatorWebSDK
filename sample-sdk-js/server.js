@@ -3,19 +3,19 @@ const path = require('path');
 const app = express();
 const port = 8080;
 
-app.use("/src", express.static(path.join(__dirname, "src")));
+app.use("/", express.static(path.join(__dirname, "/public")));
 
 // Set up a route for ignore-index.html.
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname + '/src/index.html'));
+app.get(/\/(index.html)?$/, function (req, res) {
+  res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.get('/dashboard', function (req, res) {
-  res.sendFile(path.join(__dirname + '/src/dashboard.html'));
+app.get('/dashboard(\.html)?', function (req, res) {
+  res.sendFile(path.join(__dirname + '/dashboard.html'));
 });
 
 app.get('/expired-link', function (req, res) {
-  res.sendFile(path.join(__dirname + '/src/expired-link.html'));
+  res.sendFile(path.join(__dirname + '/expired-link.html'));
 });
 
 // Start the server.
