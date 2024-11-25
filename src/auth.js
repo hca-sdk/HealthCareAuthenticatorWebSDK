@@ -71,12 +71,21 @@ export async function setHcaSdkConfig(clientId,
     isLoginPopup = false, 
     ) {
 
+    const firstKnownAuthorities = knownAuthorities.slice()
+    const firstKnownAuthority = firstKnownAuthorities[0]
+
     // Set the global variables
     msalConfig.auth.clientId = clientId;
-    msalConfig.auth.knownAuthorities = knownAuthorities.slice();
+    msalConfig.auth.knownAuthorities = firstKnownAuthorities;
     
-    //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
-    const authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
+    let authority
+    const isB2cAuthority = ["b2clogin.com", "onekeyconnect.com"].some(domain => firstKnownAuthority.indexOf(domain) != -1)
+    if (isB2cAuthority) {
+        //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
+        authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
+    } else {
+        authority = "https://" + knownAuthorities[0]
+    }
     msalConfig.auth.authority = authority;
 
     if (postLogoutRedirectUri) {
@@ -99,7 +108,14 @@ export async function setHcaSdkConfig(clientId,
     tokenRequest.scopes = scopes.slice();
 
     // SignUp request
-    const signupAuthority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + signupPolicyId;
+    let signupAuthority
+    if (isB2cAuthority) {
+        // authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
+        signupAuthority = "https://" + firstKnownAuthority + "/" + tenantDomain + "/" + signupPolicyId;
+    } else {
+        signupAuthority = "https://" + firstKnownAuthority
+    }
+
     signUpFlowRequest.authority = signupAuthority;
     signUpFlowRequest.scopes = scopes.slice();
 
