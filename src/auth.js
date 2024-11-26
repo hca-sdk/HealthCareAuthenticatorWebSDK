@@ -68,7 +68,7 @@ export async function setHcaSdkConfig(clientId,
     errorRedirectUrl = "",
     redirectURL = "", // This URL must be configured in portal,
     postLogoutRedirectUri = "",
-    isLoginPopup = false, 
+    isLoginPopup = false,
     ) {
 
     const firstKnownAuthorities = knownAuthorities.slice()
@@ -94,7 +94,6 @@ export async function setHcaSdkConfig(clientId,
 
     if (redirectURL) {
         msalConfig.auth.redirectUri = redirectURL;
-        msalConfig.auth.navigateToLoginRequestUrl = false;
     }
 
     // Api config
@@ -243,7 +242,15 @@ export async function handleResponse(response) {
     }
 }
 
-export async function signIn() {
+export async function signIn(redirectStartPage, state) {
+    if (typeof redirectStartPage == 'string' && !!redirectStartPage) {
+        loginRequest.redirectStartPage = redirectStartPage
+    }
+
+    if (typeof state == 'string' && !!state) {
+        loginRequest.state = state
+    }
+
     myMSALObj.loginRedirect(loginRequest);
 }
 
@@ -303,7 +310,15 @@ export function isAccountLogged() {
     }
 }
 
-export async function signUp() {
+export async function signUp(redirectStartPage, state) {
+    if (typeof redirectStartPage == 'string' && !!redirectStartPage) {
+        signUpFlowRequest.redirectStartPage = redirectStartPage
+    }
+
+    if (typeof state == 'string' && !!state) {
+        signUpFlowRequest.state = state
+    }
+
     myMSALObj.loginRedirect(signUpFlowRequest);
 }
 
@@ -321,6 +336,13 @@ export async function setLocaleParams(locale) {
     if (signUpFlowRequest.extraQueryParameters?.ui_locales) {
         delete (signUpFlowRequest.extraQueryParameters.ui_locales);
         delete (signUpFlowRequest.extraQueryParameters.locale);
+    }
+}
+
+export async function setRedirectStartPage(redirectStartPage) {
+    if (typeof redirectStartPage == 'string' && !!redirectStartPage) {
+        loginRequest.redirectStartPage = redirectStartPage;
+        signUpFlowRequest.redirectStartPage = redirectStartPage;
     }
 }
 
