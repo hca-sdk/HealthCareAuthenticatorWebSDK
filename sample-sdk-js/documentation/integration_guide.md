@@ -27,7 +27,10 @@
       <div>
 
             <!-- Place you want to display the SignIn button -->
-            <div id="hcaSdk">
+            <div id="hca_signin"> 
+            </div>
+            <!-- Place you want to display the SignUp button -->
+            <div id="hca_signup"> 
             </div>
 
         </div>
@@ -58,7 +61,9 @@
         <apimSubscriptionKey>,
         <apiBasePath>,
         <expiredUrl>,
-        <redirectUrl>
+        <redirectUrl>,
+        <postLogoutRedirectUri>,
+        <isLoginPopup>
       );
     </script>
 
@@ -85,9 +90,13 @@
 
   The Parameter `&lt;apiBasePath&gt;` has a default value. *Do not change it*.
 
-  The Parameter `&lt;expiredUrl&gt;` could be filled with url link, which to be redirected to, when Magic-link has expired.
+  The Parameter &lt;expiredUrl&gt; could be filled with url link, which to be redirected to, when Magic-link has expired.
 
-  The Parameter `&lt;redirectUrl&gt;` could be filled with url link, which to be redirected to, after user logged in.
+  The Parameter &lt;redirectUrl&gt; could be filled with url link, which to be redirected to, after user logged in.
+
+  The Parameter &lt;postLogoutRedirectUri&gt; could be filled with url link, which to be redirected to, after user logged out.
+
+  The Parameter &lt;isLoginPopup&gt; the config to enabling loginPopup instead of loginRedirect on button signIn and signUp render by hcaSdk, default to false.
 
   4. Define the return function to handle the login
 
@@ -144,16 +153,52 @@ The callback function below displays the ID of the logged user:
 ```
 
 6. Customize button labels:
-  - hcaSdk.setLabels(<signInButtonLabel>, <signUpButtonLabel>, <signOutButtonLabel>): For customizing labels of sign in, sign-up and sign-out buttons
+  - `hcaSdk.setLabels(<signInButtonLabel>, <signUpButtonLabel>, <signOutButtonLabel>)`: For customizing labels of sign in, sign-up and sign-out buttons
 
 ```js
-  hca.setLabels('Sign-in', 'Sign-up', 'Sign-out')
+  hcaSdk.setLabels('Sign-in', 'Sign-up', 'Sign-out')
 ```
 
 7. Customize locale params:
-  - hcaSdk.setLocaleParams(<localeString>): allows to specify the language or regional settings (locale) for the HCA’s sign-in / sign-up page
+  - `hcaSdk.setLocaleParams(<localeString>)`: allows to specify the language or regional settings (locale) for the HCA’s sign-in / sign-up page
 page
 
 ```js
-  hca.setLocaleParams('en-GB')
+  hcaSdk.setLocaleParams('en-GB')
 ```
+
+8. Customize `redirectStartPage`:
+After signup success, users could be redirect back to the application where the signup redirect was initialized. If you want to change the destination start page, you can specify `redirectStartPage` 
+
+  - `hcaSdk.setRedirectStartPage(<redirectStartPageUri>)`: allows to specify the start page after redirect sign-in / sign-up finish.
+
+This methods `hcaSdk.setRedirectStartPage` is the only way to setup `redirectStartPage` when you are using button rendered by hcaSdk.
+
+Incase you are using `hcaSdk.signIn` and `hcaSdk.signUp` methods for sign-in and sign-up redirect, you can also custom `redirectStartPage` by
+`hcaSdk.signIn(<redirectStartPage>, <state>)` or `hcaSdk.signUp(<redirectStartPage>, <state>)`
+
+```js
+  hcaSdk.setRedirectStartPage("/dashboard")
+```
+
+9. Customize `state` parameters:
+
+`State` parameters are often used to maintain the state between authentication requests and responses, store information about the user’s context or the current page they are on before redirecting them to the sign-in / sign-up page
+
+- `hcaSdk.setStateParams(<state>)`: allow to specify the state parameter before sign-in or sign-up action.
+
+- `hcaSdk.signIn(<redirectStartPage>, <state>)` or `hcaSdk.signUp(<redirectStartPage>, <state>)` could also be used to setup state parameter when initialize sign-in / sign-up
+
+```js
+  hcaSdk.setStateParams('HealthCare Authenticator');
+```
+
+After authentication succeeded and redirect user back to page init login (or `redirectUri` - if specified), the state parameters could be retrieve at `loginCallback`. (loginCallback could be register by hcaSdk.setLoginCallback methods)
+
+```js
+  hcaSdk.setLoginCallback((account, state) => {
+    console.log({state}); // HealthCare Authenticator
+  });
+```
+
+*Note*: State parameters can only retrieve for the first time after authentication response is received by your application. (loginCallback triggered first time after user redirect back from login)
