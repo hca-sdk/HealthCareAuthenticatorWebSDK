@@ -251,6 +251,11 @@ export async function signIn(redirectStartPage, state) {
         loginRequest.state = state
     }
 
+    const hcaId = localStorage.getItem("HCAIDKey");
+    if (hcaId) {
+        loginRequest.extraQueryParameters = { userID: hcaId };
+    }
+
     myMSALObj.loginRedirect(loginRequest);
 }
 
