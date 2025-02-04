@@ -1,7 +1,7 @@
 import { apiConfig } from './auth.js';
 
 export function triggerAimTag(apiKey) {
-    document.addEventListener("DOMContentLoaded", (event) => {
+    //document.addEventListener("DOMContentLoaded", (event) => {
         aimTag(apiKey, "signal", function(error, data) {
             if (error) {
                 // Occurs when API key is disabled
@@ -21,7 +21,7 @@ export function triggerAimTag(apiKey) {
                 });
             }
         });
-    });
+    //});
 }
 
 function formatPayload(data, hcaId) {
