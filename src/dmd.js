@@ -25,25 +25,31 @@ export function triggerAimTag(apiKey) {
 }
 
 function formatPayload(data, hcaId) {
-    const { country_code, first_name, last_name, npi_number, email, state } = data;
+    const { country_code, dgid, email, first_name, last_name, npi_number, primary_specialty_code, professional_designation, state, zip_code } = data;
     return {
-        country: country_code,
+        dgid: dgid,
         email: email,
         firstName: first_name, 
+        isoCountry: country_code,
         lastName: last_name,
-        npi: npi_number,
+        locale: "",
+        postalCode: zip_code,
+        professionalType: professional_designation, // API needs an OneKey code
+        specialty: primary_specialty_code, // API needs an OneKey code
         state: state,
+        uci: npi_number,
         userID: hcaId
     };
 }
 
 async function resolveFromUserRecord(data, callback) {
-    const endpoint = `${apiConfig.endpoint}/myNewEndPoint`;
+    const endpoint = `https://onekey-hcl-dev-eastus-apim.azure-api.net/api/hca/identities/resolve`;
     console.log('endpoint', endpoint);
     const request = new Request(endpoint, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "ocp-apim-subscription-key": "c790311934d34f639025433d01e2e19c"
         },
         body: JSON.stringify(data)
     });
