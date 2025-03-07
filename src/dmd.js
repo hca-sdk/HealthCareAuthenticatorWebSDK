@@ -7,6 +7,7 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
             console.error(error);
         } else if (data?.identity_type === "AUT") {
             console.log('Aim signal data', data);
+            document.getElementById('signal').innerText = JSON.stringify(data, null, 2); // For testing purpose with demo app widget only - To remove
             const lsHcaId = "HCAIDKey";
             const hcaID = localStorage.getItem(lsHcaId);
             const payload = formatPayload(data, hcaID);
