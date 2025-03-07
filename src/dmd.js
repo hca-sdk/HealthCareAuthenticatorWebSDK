@@ -6,6 +6,7 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
         if (error) {
             console.error(error);
         } else if (data?.identity_type === "AUT") {
+            console.log('Aim signal data', data);
             const lsHcaId = "HCAIDKey";
             const hcaID = localStorage.getItem(lsHcaId);
             const payload = formatPayload(data, hcaID);
