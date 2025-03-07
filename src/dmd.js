@@ -1,65 +1,63 @@
+// TASK-13748
 import { apiConfig } from './auth.js';
 
-export function triggerAimTag(apiKey) {
-    //document.addEventListener("DOMContentLoaded", (event) => {
-        aimTag(apiKey, "signal", function(error, data) {
-            if (error) {
-                // Occurs when API key is disabled
-                console.log(error);
-            } else if (data && data?.identity_type === "AUT") {
-                console.log(data);
-                const hcaId = localStorage.getItem('HCAIDKey');
-                const payload = formatPayload(data, hcaId);
-                console.log('payload', payload);
-                resolveFromUserRecord(payload, async (response) => {
-                    const json = await response.json();
-                    const hcaId = json?.userID;
-                    if (hcaId) {
-                        localStorage.setItem('HCAIDKey', hcaId);
-                        // dmd notify (hcaId, personal info)
-                    }
-                });
+export function listenToAimSignal(aimApiKey, subscriptionKey) {
+    aimTag(aimApiKey, "signal", async (error, data) => {
+        if (error) {
+            console.error(error);
+        } else if (data?.identity_type === "AUT") {
+            const lsHcaId = "HCAIDKey";
+            const hcaID = localStorage.getItem(lsHcaId);
+            const payload = formatPayload(data, hcaID);
+            const response = await resolveUserIdentity(payload, subscriptionKey);
+            console.log('Request payload', payload);
+            console.log('Response', response);
+            const userId = response?.user_id;
+            if (userId) {
+                localStorage.setItem(lsHcaId, userId);
+                notifyDMD(data, userId);
             }
-        });
-    //});
+        }
+    });
 }
 
 function formatPayload(data, hcaId) {
     const { country_code, dgid, email, first_name, last_name, npi_number, primary_specialty_code, professional_designation, state, zip_code } = data;
     return {
-        dgid: dgid,
+        external_id: dgid,
         email: email,
-        firstName: first_name, 
-        isoCountry: country_code,
-        lastName: last_name,
-        locale: "",
-        postalCode: zip_code,
-        professionalType: professional_designation, // API needs an OneKey code
-        specialty: primary_specialty_code, // API needs an OneKey code
+        first_name: first_name, 
+        iso_country: country_code,
+        last_name: last_name,
+        locale: localStorage.getItem("locale"),
+        postal_code: zip_code,
+        //professional_type: professional_designation,
+        //specialty: primary_specialty_code,
         state: state,
         uci: npi_number,
-        userID: hcaId
+        //user_id: hcaId
     };
 }
 
-async function resolveFromUserRecord(data, callback) {
-    const endpoint = `https://onekey-hcl-dev-eastus-apim.azure-api.net/api/hca/identities/resolve`;
-    console.log('endpoint', endpoint);
-    const request = new Request(endpoint, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "ocp-apim-subscription-key": "c790311934d34f639025433d01e2e19c"
-        },
-        body: JSON.stringify(data)
-    });
+function notifyDMD(data, userID) {
+    //console.log("TODO: Notify DMD");
+};
+
+async function resolveUserIdentity(data) {
     try {
-        const response = await fetch(request);
-        if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        callback(response);
-      } catch (error) {
-        console.error(error.message);
-      }
+        const endpoint = `${apiConfig.endpoint}/identities/resolve/dmd`;
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "ocp-apim-subscription-key": apiConfig.subscriptionKey
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        return result || {};
+    } catch (error) {
+        console.error("Identity resolver request failed", error);
+        return {};
+    }
 }

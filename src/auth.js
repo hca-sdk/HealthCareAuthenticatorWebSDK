@@ -64,13 +64,21 @@ export async function setHcaSdkConfig(clientId,
     policyId = "b2c_1a_hca_signup_signin",
     signupPolicyId = "b2c_1a_hca_signuponly",
     apimSubscriptionKey = "",
-    apiBasePath = "https://api.healthcaresdks.com/api/hca/user/me",
+    apiBasePath = "https://api.healthcaresdks.com/api/hca",
     errorRedirectUrl = "",
     redirectURL = "", // This URL must be configured in portal,
     postLogoutRedirectUri = "",
     isLoginPopup = false,
     ) {
 
+    // TASK-13748
+    // Rewrite client's apiBasePath argument which could already ends with "/user/me" by removing this path.
+    // Now, default apiBasePath no longer ends with "/user/me", its use was moved to specific API calls (see profile.js).
+    // TODO: This could be remove in case all clients are aware of this update and applied it in their own SDK JS implementation.
+    if (apiBasePath.endsWith("/user/me")) {
+        apiBasePath = apiBasePath.replace("/user/me", "");
+    }
+    
     const firstKnownAuthorities = knownAuthorities.slice()
     const firstKnownAuthority = firstKnownAuthorities[0]
 
@@ -251,6 +259,7 @@ export async function signIn(redirectStartPage, state) {
         loginRequest.state = state
     }
 
+    // TASK-13748
     const hcaId = localStorage.getItem("HCAIDKey");
     if (hcaId) {
         loginRequest.extraQueryParameters = { userID: hcaId };

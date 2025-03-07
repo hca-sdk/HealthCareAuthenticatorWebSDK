@@ -41,7 +41,7 @@ export async function getProfile(callback) {
         });
 
         if (response) {
-            const userProfileUrl = `${apiConfig.endpoint}/profile`;
+            const userProfileUrl = `${apiConfig.endpoint}/user/me/profile`;
             callAPI(userProfileUrl, response.idToken, callback);
         }
     }
@@ -66,7 +66,7 @@ export async function getAccount(callback) {
         });
 
         if (response) {
-            const userProfileUrl = `${apiConfig.endpoint}/account`;
+            const userProfileUrl = `${apiConfig.endpoint}/user/me/account`;
             callAPI(userProfileUrl, response.idToken, callback);
         }
     }
