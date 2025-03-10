@@ -8,16 +8,17 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
         } else if (data?.identity_type === "AUT") {
             console.log('Aim signal data', data);
             document.getElementById('signal').innerText = JSON.stringify(data, null, 2); // For testing purpose with demo app widget only - To remove
-            const lsHcaId = "HCAIDKey";
-            const hcaID = localStorage.getItem(lsHcaId);
+            const lsHcaIdKey = "HCAIDKey";
+            const hcaID = localStorage.getItem(lsHcaIdKey);
             const payload = formatPayload(data, hcaID);
             const response = await resolveUserIdentity(payload, subscriptionKey);
             console.log('Request payload', payload);
             console.log('Response', response);
-            const userId = response?.user_id;
-            if (userId) {
-                localStorage.setItem(lsHcaId, userId);
-                notifyDMD(data, userId);
+            const hcaId = response?.hca_id;
+            if (hcaId) {
+                localStorage.setItem(lsHcaIdKey, hcaId);
+                document.getElementById('response').innerText = JSON.stringify(response, null, 2); // For testing purpose with demo app widget only - To remove
+                notifyDMD(data, hcaId);
             }
         }
     });
