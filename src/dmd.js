@@ -14,10 +14,10 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
             const response = await resolveUserIdentity(payload, subscriptionKey);
             console.log('Request payload', payload);
             console.log('Response', response);
+            document.getElementById('response').innerText = JSON.stringify(response, null, 2); // For testing purpose with demo app widget only - To remove
             const hcaId = response?.hca_id;
             if (hcaId) {
                 localStorage.setItem(lsHcaIdKey, hcaId);
-                document.getElementById('response').innerText = JSON.stringify(response, null, 2); // For testing purpose with demo app widget only - To remove
                 notifyDMD(data, hcaId);
             }
         }
