@@ -6,20 +6,26 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
         if (error) {
             console.error(error);
         } else if (data?.identity_type === "AUT") {
-            console.log('Aim signal data', data);
-            document.getElementById('signal').innerText = JSON.stringify(data, null, 2); // For testing purpose with demo app widget only - To remove
             const lsHcaIdKey = "HCAIDKey";
             const hcaID = localStorage.getItem(lsHcaIdKey);
             const payload = formatPayload(data, hcaID);
             const response = await resolveUserIdentity(payload, subscriptionKey);
-            console.log('Request payload', payload);
-            console.log('Response', response);
-            document.getElementById('response').innerText = JSON.stringify(response, null, 2); // For testing purpose with demo app widget only - To remove
             const hcaId = response?.hca_id;
             if (hcaId) {
                 localStorage.setItem(lsHcaIdKey, hcaId);
                 notifyDMD(data, hcaId);
             }
+            console.log('Aim signal data', data);
+            console.log('Request payload', payload);
+            console.log('Response', response);
+            /* BEGIN: FOR TESTING PURPOSE ONLY - TO BE REMOVED */
+            const signalInput = document.getElementById('signal');
+            const responseInput = document.getElementById('response');
+            if (signalInput && responseInput) {
+                signalInput.innerText = JSON.stringify(data, null, 2);
+                responseInput.innerText = JSON.stringify(response, null, 2);
+            }
+            /* END: FOR TESTING PURPOSE ONLY - TO BE REMOVED */
         }
     });
 }
