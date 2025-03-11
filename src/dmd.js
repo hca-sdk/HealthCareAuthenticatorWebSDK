@@ -6,18 +6,19 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
         if (error) {
             console.error(error);
         } else if (data?.identity_type === "AUT") {
+            console.log('AIM signal data', data);
             const lsHcaIdKey = "HCAIDKey";
             const hcaID = localStorage.getItem(lsHcaIdKey);
             const payload = formatPayload(data, hcaID);
+            console.log('API Request payload', payload);
             const response = await resolveUserIdentity(payload, subscriptionKey);
+            console.log('API Response', response);
             const hcaId = response?.hca_id;
             if (hcaId) {
                 localStorage.setItem(lsHcaIdKey, hcaId);
-                notifyDMD(data, hcaId);
+                aimTag(aimApiKey, 'authenticate', { hca_id: hcaId });
+                console.log('Notification sent to AIM');                                                                                                                                                                                 
             }
-            console.log('Aim signal data', data);
-            console.log('Request payload', payload);
-            console.log('Response', response);
             /* BEGIN: FOR TESTING PURPOSE ONLY - TO BE REMOVED */
             const signalInput = document.getElementById('signal');
             const responseInput = document.getElementById('response');
@@ -47,10 +48,6 @@ function formatPayload(data, hcaId) {
         //user_id: hcaId
     };
 }
-
-function notifyDMD(data, userID) {
-    //console.log("TODO: Notify DMD");
-};
 
 async function resolveUserIdentity(data) {
     try {
