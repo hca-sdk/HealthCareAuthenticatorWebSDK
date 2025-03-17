@@ -1,7 +1,7 @@
 // TASK-13748
 import { apiConfig } from './auth.js';
 
-export function listenToAimSignal(aimApiKey, subscriptionKey) {
+export function initAIM(aimApiKey) {
     aimTag(aimApiKey, "signal", async (error, data) => {
         if (error) {
             console.error(error);
@@ -11,7 +11,7 @@ export function listenToAimSignal(aimApiKey, subscriptionKey) {
             const hcaID = localStorage.getItem(lsHcaIdKey);
             const payload = formatPayload(data, hcaID);
             console.log('API Request payload', payload);
-            const response = await resolveUserIdentity(payload, subscriptionKey);
+            const response = await resolveUserIdentity(payload);
             console.log('API Response', response);
             const hcaId = response?.hca_id;
             if (hcaId) {
