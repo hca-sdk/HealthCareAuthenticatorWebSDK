@@ -202,3 +202,23 @@ After authentication succeeded and redirect user back to page init login (or `re
 ```
 
 *Note*: State parameters can only retrieve for the first time after authentication response is received by your application. (loginCallback triggered first time after user redirect back from login)
+
+10. Use AIM feature
+
+To use AIM feature along with HCA SDK JS, you need to:
+- Load AIM JS library
+```js
+  <script async src="https://aim-tag.hcn.health/js/client.js?dl=aimDataLayer"></script>
+```  
+- Copy/Past following JS script and replace `<aimApiKey>` by you own AIM API key.
+```js
+  <script>
+    window.aimDataLayer = window.aimDataLayer || [];
+    function aimTag() { aimDataLayer.push(arguments); }
+    window.addEventListener("load", function() {
+      hcaSdk.initAIM(<aimApiKey>);
+    }, false);
+  </script>
+```
+Once your page is loaded, this JS script will run AIM Tag Signal function.
+As soon as it captures user data, it will be processed within HCA system (e.g. create user).
