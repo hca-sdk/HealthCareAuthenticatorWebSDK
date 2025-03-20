@@ -1,4 +1,4 @@
-import { apiConfig } from './auth.js';
+import { apiConfig, clientLocale } from './auth.js';
 
 export function initAIM(aimApiKey) {
     aimTag(aimApiKey, "signal", async (error, data) => {
@@ -28,7 +28,7 @@ function formatPayload(data) {
         first_name: first_name, 
         iso_country: country_code,
         last_name: last_name,
-        locale: localStorage.getItem("locale"),
+        locale: clientLocale,
         postal_code: zip_code,
         professional_type: professional_designation,
         specialty: primary_specialty_code,

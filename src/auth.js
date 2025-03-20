@@ -15,6 +15,7 @@ import {
 
 export let signInType;
 export let accountId = "";
+export let clientLocale;
 
 // Create the main myMSALObj instance
 export let myMSALObj;  // instantiation in setHcaSdkConfig
@@ -74,7 +75,7 @@ export async function setHcaSdkConfig(clientId,
     // TASK-13748
     // Rewrite client's apiBasePath argument which could already ends with "/user/me" by removing this path.
     // Now, default apiBasePath no longer ends with "/user/me", its use was moved to specific API calls (see profile.js).
-    // TODO: This could be remove in case all clients are aware of this update and applied it in their own SDK JS implementation.
+    // TODO: This could be removed in case all clients are aware of this update and applied it in their own SDK JS implementation.
     if (apiBasePath.endsWith("/user/me")) {
         apiBasePath = apiBasePath.replace("/user/me", "");
     }
@@ -259,9 +260,8 @@ export async function signIn(redirectStartPage, state) {
         loginRequest.state = state
     }
 
-    // TASK-13748
     const hcaId =  window.hcaid
-        || localStorage.getItem("HCAIDKey")
+        || localStorage.getItem("hcaid")
         || document.querySelector("body")?.dataset['hcaid'];
     if (hcaId) {
         loginRequest.extraQueryParameters = { userID: hcaId };
@@ -340,6 +340,7 @@ export async function signUp(redirectStartPage, state) {
 
 export async function setLocaleParams(locale) {
     if (typeof locale == 'string' && !!locale) {
+        clientLocale = locale;
         loginRequest.extraQueryParameters = { ui_locales: locale, locale };
         signUpFlowRequest.extraQueryParameters = { ui_locales: locale, locale };
         return;
@@ -353,6 +354,7 @@ export async function setLocaleParams(locale) {
         delete (signUpFlowRequest.extraQueryParameters.ui_locales);
         delete (signUpFlowRequest.extraQueryParameters.locale);
     }
+    clientLocale = undefined;
 }
 
 export async function setRedirectStartPage(redirectStartPage) {
