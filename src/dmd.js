@@ -12,7 +12,7 @@ export function initAIM(aimApiKey) {
                 saveHCAID(hcaId);
                 notifyAIM(aimApiKey, hcaId);
                 // For testing purpose only
-                sendResponseToDemoAppWidget();
+                sendResponseToDemoAppWidget(data, response);
             } else {
                 console.error("Error: No HCAID returned.");
             }
@@ -70,7 +70,7 @@ function notifyAIM(aimApiKey, hcaId) {
  * For testing purpose only.
  * Need testing widget to be present in demo app.
  */
-function sendResponseToDemoAppWidget() {
+function sendResponseToDemoAppWidget(data, response) {
     const signalInput = document.getElementById('signal');
     const responseInput = document.getElementById('response');
     if (signalInput && responseInput) {
