@@ -260,7 +260,9 @@ export async function signIn(redirectStartPage, state) {
     }
 
     // TASK-13748
-    const hcaId = localStorage.getItem("HCAIDKey");
+    const hcaId =  window.hcaid
+        || localStorage.getItem("HCAIDKey")
+        || document.querySelector("body")?.dataset['hcaid'];
     if (hcaId) {
         loginRequest.extraQueryParameters = { userID: hcaId };
     }
