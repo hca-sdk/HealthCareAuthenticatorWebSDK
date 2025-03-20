@@ -222,3 +222,6 @@ To use AIM feature along with HCA SDK JS, you need to:
 ```
 Once your page is loaded, this JS script will run AIM Tag Signal function.
 As soon as it captures user data, it will be processed within HCA system (e.g. create user).
+
+Note:
+Function `hcaSdk.setLocaleParams(<locale>)` must be called before `hcaSdk.initAIM(<aimApiKey>)` is called so it can take advantage of that locale.
