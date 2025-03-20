@@ -10,7 +10,7 @@ export function initAIM(aimApiKey) {
             const hcaId = response?.hca_id;
             if (hcaId) {
                 saveHCAID(hcaId);
-                notifyAIM(hcaId);
+                notifyAIM(aimApiKey, hcaId);
                 // For testing purpose only
                 sendResponseToDemoAppWidget();
             } else {
@@ -62,7 +62,7 @@ function saveHCAID(hcaId) {
     document.querySelector("body").dataset.hcaId = hcaId;
 }
 
-function notifyAIM(hcaId) {
+function notifyAIM(aimApiKey, hcaId) {
     aimTag(aimApiKey, 'authenticate', { hca_id: hcaId });
 }
 
