@@ -25,9 +25,9 @@ function formatPayload(data) {
     const payload = {};
     Object.keys(data).forEach(key => {
         const value = data[key];
-        if (requiredFields.includes(key) && value && value !== "") {
+        //if (requiredFields.includes(key) && value && value !== "") {
             payload[key] = value;
-        }
+        //}
     });
     return payload;
 }
