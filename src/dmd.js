@@ -21,20 +21,15 @@ export function initAIM(aimApiKey) {
 }
 
 function formatPayload(data) {
-    const { country_code, dgid, email, first_name, last_name, npi_number, primary_specialty_code, professional_designation, state, zip_code } = data;
-    return {
-        external_id: dgid,
-        email: email,
-        first_name: first_name, 
-        iso_country: country_code,
-        last_name: last_name,
-        locale: clientLocale,
-        postal_code: zip_code,
-        professional_type: professional_designation,
-        specialty: primary_specialty_code,
-        state: state,
-        uci: npi_number
-    };
+    const requiredFields = ["country_code", "dgid", "email", "first_name", "last_name", "npi_number", "primary_specialty_code", "professional_designation", "state", "zip_code"];
+    const payload = {};
+    Object.keys(data).forEach(key => {
+        const value = data[key];
+        if (requiredFields.includes(key) && value && value !== "") {
+            payload[key] = value;
+        }
+    });
+    return payload;
 }
 
 async function resolveUserIdentity(data) {
