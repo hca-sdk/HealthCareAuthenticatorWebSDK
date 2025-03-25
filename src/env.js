@@ -1,1 +1,1 @@
-export const ENVIRONMENT = 'development';
+export const ENVIRONMENT = 'dev';

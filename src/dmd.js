@@ -1,10 +1,9 @@
 import { apiConfig, clientLocale } from './auth.js';
 import { ENVIRONMENT } from './env.js';
 
-const testEnvs = ["development", "uat"];
+const testEnvs = ["dev", "uat"];
 const AIMIdentityTypes = ["AUT", "POI", "UNK"];
 
-console.log("ENVIRONMENT", ENVIRONMENT);
 if (testEnvs.includes(ENVIRONMENT)) {
     AIMIdentityTypes.push("TST");
 }
