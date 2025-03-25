@@ -79,7 +79,7 @@
 
   The Parameter `&lt;policyId&gt;` has a default value set to "B2C_1A_HCA_SIGNUP_SIGNIN".
 
-  The Parameter `&lt;signupPolicyId&gt;` has a default value set to "B2C_1A_HCASIGNUPONLY".
+  The Parameter `&lt;signupPolicyId&gt;` has a default value set to "B2C_1A_HCA_SIGNUPONLY".
 
   The Parameter `&lt;apimSubscriptionKey&gt;` has a default value. *Do not change it*.
 
