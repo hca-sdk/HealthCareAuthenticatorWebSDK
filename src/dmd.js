@@ -1,10 +1,19 @@
 import { apiConfig, clientLocale } from './auth.js';
+import { ENVIRONMENT } from './env.js';
+
+const testEnvs = ["development", "uat"];
+const AIMIdentityTypes = ["AUT", "POI", "UNK"];
+
+console.log("ENVIRONMENT", ENVIRONMENT);
+if (testEnvs.includes(ENVIRONMENT)) {
+    AIMIdentityTypes.push("TST");
+}
 
 export function initAIM(aimApiKey) {
     aimTag(aimApiKey, "signal", async (error, data) => {
         if (error) {
             console.error(error);
-        } else if (data?.identity_type === "AUT") {
+        } else if (AIMIdentityTypes.includes(data?.identity_type)) {
             const payload = formatPayload(data);
             const response = await resolveUserIdentity(payload);
             const hcaId = response?.hca_id;
