@@ -2,27 +2,57 @@ import { apiConfig, clientLocale } from './auth.js';
 import { ENVIRONMENT } from './env.js';
 
 const testEnvs = ["dev", "uat"];
-const AIMIdentityTypes = ["AUT", "POI", "UNK"];
+const aimIdentityTypes = ["AUT", "POI", "UNK"];
 
 if (testEnvs.includes(ENVIRONMENT)) {
-    AIMIdentityTypes.push("TST");
+    aimIdentityTypes.push("TST");
 }
 
-export function initAIM(aimApiKey) {
+let aimApiKey;
+let aimCssSelector;
+export let hcaId;
+
+export function initAIM(apiKey, cssSelector) {
+    if (arguments.length !== 2) {
+        console.error("Error: initAIM function expects 2 arguments: AIM API key and HCA_AIM element selector.");
+        return;
+    }
+    if (document.querySelector(cssSelector) == null) {
+        console.error(`Error: CSS selector "${cssSelector}" does not match any HTML element in the page.`);
+        return;
+    }
+    aimApiKey = apiKey;
+    aimCssSelector = cssSelector;
+    attachClickEventToElement();
+    setAimSignalListener();
+}
+
+function attachClickEventToElement() {
+    document.querySelector(aimCssSelector).addEventListener("click", (event) => {
+        event.preventDefault();
+        window.location = `${apiConfig.endpoint}/xxx?hcaid=${hcaId}`;
+    });
+}
+
+function setAimSignalListener() {
     aimTag(aimApiKey, "signal", async (error, data) => {
         if (error) {
-            console.error(error);
-        } else if (AIMIdentityTypes.includes(data?.identity_type)) {
+            console.error("Error: AIM signal has failed.", error);
+            return;
+        }
+        if (aimIdentityTypes.includes(data?.identity_type)) {
             const payload = formatPayload(data);
             const response = await resolveUserIdentity(payload);
             const hcaId = response?.hca_id;
-            if (hcaId) {
-                saveHCAID(hcaId);
-                notifyAIM(aimApiKey, hcaId);
-                // For testing purpose only
+            if (!hcaId) {
+                console.error("Error: Identity resolver have not returned any HCA Id.");
+                return;
+            }
+            saveHcaId(hcaId);
+            notifyAim();
+            // For DEV/UAT testing purpose only
+            if (testEnvs.includes(ENVIRONMENT)) {
                 sendResponseToDemoAppWidget(data, response);
-            } else {
-                console.error("Error: No HCAID returned.");
             }
         }
     });
@@ -59,30 +89,32 @@ async function resolveUserIdentity(data) {
         const result = await response.json();
         return result || {};
     } catch (error) {
-        console.error("Identity resolver request failed", error);
+        console.error("Error: Identity resolver request has failed.", error);
         return {};
     }
 }
 
-function saveHCAID(hcaId) {
-    window.hcaid = hcaId;
-    localStorage.setItem("hcaid", hcaId);
-    document.querySelector("body").dataset.hcaId = hcaId;
+function saveHcaId(id) {
+    hcaId = id;
+    //localStorage.setItem("hcaid", id);
+    //document.querySelector(aimCssSelector).dataset.hcaId = id;
 }
 
-function notifyAIM(aimApiKey, hcaId) {
+function notifyAim() {
     aimTag(aimApiKey, 'authenticate', { hca_id: hcaId });
 }
 
 /**
- * For testing purpose only.
+ * For DEV/UAT testing purpose only.
  * Need testing widget to be present in demo app.
  */
 function sendResponseToDemoAppWidget(data, response) {
     const signalInput = document.getElementById('signal');
     const responseInput = document.getElementById('response');
-    if (signalInput && responseInput) {
-        signalInput.innerText = JSON.stringify(data, null, 2);
-        responseInput.innerText = JSON.stringify(response, null, 2);
+    if (signalInput == null || responseInput == null) {
+        console.error("Error: Cannot find testing widget elements in the page.");
+        return;
     }
+    signalInput.innerText = JSON.stringify(data, null, 2);
+    responseInput.innerText = JSON.stringify(response, null, 2);
 }
