@@ -203,25 +203,26 @@ After authentication succeeded and redirect user back to page init login (or `re
 
 *Note*: State parameters can only retrieve for the first time after authentication response is received by your application. (loginCallback triggered first time after user redirect back from login)
 
-10. Use AIM feature
+10. Use HCA AIM XR feature
 
-To use AIM feature along with HCA SDK JS, you need to:
-- Load AIM JS library
+To use HCA AIM XR feature along with HCA SDK JS, you need to:
+- Load AIM XR JS library
 ```js
   <script async src="https://aim-tag.hcn.health/js/client.js?dl=aimDataLayer"></script>
 ```  
-- Copy/Past following JS script and replace `<aimApiKey>` by you own AIM API key.
+- Copy/Past following JS script, then replace `<aimApiKey>` by your own AIM API key and `<elementSelector>` by the selector of the HTML element that will trigger the process on event click.
 ```js
   <script>
     window.aimDataLayer = window.aimDataLayer || [];
     function aimTag() { aimDataLayer.push(arguments); }
     window.addEventListener("load", function() {
-      hcaSdk.initAIM(<aimApiKey>);
+      hcaSdk.initAIM("<aimApiKey>"", "<elementSelector>");
     }, false);
   </script>
 ```
-Once your page is loaded, this JS script will run AIM Tag Signal function.
+Once your page is loaded, this JS script will run AIM XR aimTag "signal" function.
 As soon as it captures user data, it will be processed within HCA system (e.g. create user).
 
-Note:
-Function `hcaSdk.setLocaleParams(<locale>)` must be called before `hcaSdk.initAIM(<aimApiKey>)` is called so it can take advantage of that locale.
+* Notes:
+  * `<elementSelector>` can be any kind of selector (Id, class name, tag name...), just be careful that it is unique, and can represent any kind of HTML element (button, hyperlink, image...).
+  * `hcaSdk.setLocaleParams(<locale>)` must be called before `hcaSdk.initAIM(<aimApiKey>)` is called so it can take advantage of that locale.
