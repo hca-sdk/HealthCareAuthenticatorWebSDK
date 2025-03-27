@@ -11,12 +11,11 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@azure/msal-browser": "3.11.0",
-    "dotenv": "^16.4.7"
+    "@azure/msal-browser": "3.11.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^10.2.4",
-    "webpack": "^5.97.1",
+    "webpack": "^5.74.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4"
   }
