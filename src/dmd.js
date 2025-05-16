@@ -58,7 +58,7 @@ function setAimSignalListener() {
                 return;
             }
             saveHcaId(hcaId);
-            notifyAim();
+            notifyAim(hcaId);
             // For DEV/UAT testing purpose only
             if (testEnvs.includes(ENVIRONMENT)) {
                 sendResponseToDemoAppWidget(data, response);
@@ -108,7 +108,7 @@ function saveHcaId(id) {
     document.querySelector(aimCssSelector).dataset.hcaId = id;
 }
 
-function notifyAim() {
+function notifyAim(hcaId) {
     aimTag(aimApiKey, 'authenticate', { hca_id: hcaId });
 }
 
