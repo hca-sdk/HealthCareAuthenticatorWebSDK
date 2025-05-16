@@ -28,7 +28,7 @@ export function initAIM(apiKey, cssSelector) {
 
 function initEvents() {
     // After leaving Form Generator, we sign in
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("load", () => {
         const params = new URLSearchParams(document.location.search);
         const hcaId = params.get("hca_id");
         if (hcaId) {
