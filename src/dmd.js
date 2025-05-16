@@ -27,15 +27,6 @@ export function initAIM(apiKey, cssSelector) {
 }
 
 function initEvents() {
-    // After leaving Form Generator, we sign in
-    document.addEventListener("load", () => {
-        const params = new URLSearchParams(document.location.search);
-        const hcaId = params.get("hca_id");
-        if (hcaId) {
-            saveHcaId(hcaId);
-            signIn();
-        }
-    });
     // Handling click event for AIM sign-in element
     document.querySelector(aimCssSelector).addEventListener("click", (event) => {
         event.preventDefault();
@@ -44,6 +35,13 @@ function initEvents() {
 }
 
 function setAimSignalListener() {
+    const params = new URLSearchParams(document.location.search);
+    const hcaId = params.get("hca_id");
+    if (hcaId) {
+        saveHcaId(hcaId);
+        signIn();
+        return;
+    }
     aimTag(aimApiKey, "signal", async (error, data) => {
         if (error) {
             console.error("Error: AIM signal has failed.", error);
