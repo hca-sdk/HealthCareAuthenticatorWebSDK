@@ -1,4 +1,5 @@
 import { apiConfig, clientLocale, signIn } from './auth.js';
+import { displayLoadingOverlay } from './ui.js';
 import { ENVIRONMENT } from './env.js';
 
 const testEnvs = ["dev", "uat"];
@@ -39,6 +40,7 @@ function setAimSignalListener() {
     const hcaId = params.get("hca_id");
     if (hcaId) {
         saveHcaId(hcaId);
+        displayLoadingOverlay();
         signIn();
         return;
     }

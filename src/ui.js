@@ -301,3 +301,27 @@ export function displayActiveButtons() {
         toggleSignUpButton(isSignedIn)
     }
 }
+
+export function displayLoadingOverlay() {
+    const overlay = document.createElement('div');
+    Object.assign(overlay.style, {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100vw',
+        height: '100vh',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 9999
+    });
+    const spinner = document.createElement('img');
+    spinner.src = "https://form-generator.dev.healthcaresdks.com/spinner_light.svg";
+    Object.assign(spinner.style, {
+        width: '96px',
+        height: '96px'
+    });
+    overlay.appendChild(spinner);
+    document.body.appendChild(overlay);
+}
