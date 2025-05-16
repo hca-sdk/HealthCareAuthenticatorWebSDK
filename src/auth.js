@@ -260,9 +260,7 @@ export async function signIn(redirectStartPage, state) {
         loginRequest.state = state
     }
 
-    const hcaId =  window.hcaid
-        || localStorage.getItem("hcaid")
-        || document.querySelector("body")?.dataset['hcaid'];
+    const hcaId = localStorage.getItem("hcaid") || document.querySelector("body")?.dataset['hcaid'];
     if (hcaId) {
         loginRequest.extraQueryParameters = { userID: hcaId };
     }

@@ -1,4 +1,4 @@
-import { apiConfig, clientLocale } from './auth.js';
+import { apiConfig, clientLocale, signIn } from './auth.js';
 import { ENVIRONMENT } from './env.js';
 
 const testEnvs = ["dev", "uat"];
@@ -10,11 +10,10 @@ if (testEnvs.includes(ENVIRONMENT)) {
 
 let aimApiKey;
 let aimCssSelector;
-export let hcaId;
 
 export function initAIM(apiKey, cssSelector) {
     if (arguments.length !== 2) {
-        console.error("Error: initAIM function expects 2 arguments: AIM API key and HCA_AIM element selector.");
+        console.error("Error: initAIM function expects 2 arguments: AIM API key and AIM sign-in element selector.");
         return;
     }
     if (document.querySelector(cssSelector) == null) {
@@ -23,14 +22,24 @@ export function initAIM(apiKey, cssSelector) {
     }
     aimApiKey = apiKey;
     aimCssSelector = cssSelector;
-    attachClickEventToElement();
+    initEvents();
     setAimSignalListener();
 }
 
-function attachClickEventToElement() {
+function initEvents() {
+    // After leaving Form Generator, we sign in
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(document.location.search);
+        const hcaId = params.get("hca_id");
+        if (hcaId) {
+            saveHcaId(hcaId);
+            signIn();
+        }
+    });
+    // Handling click event for AIM sign-in element
     document.querySelector(aimCssSelector).addEventListener("click", (event) => {
         event.preventDefault();
-        window.location = `${apiConfig.endpoint}/xxx?hcaid=${hcaId}`;
+        signIn();
     });
 }
 
@@ -95,9 +104,8 @@ async function resolveUserIdentity(data) {
 }
 
 function saveHcaId(id) {
-    hcaId = id;
-    //localStorage.setItem("hcaid", id);
-    //document.querySelector(aimCssSelector).dataset.hcaId = id;
+    localStorage.setItem("hcaid", id);
+    document.querySelector(aimCssSelector).dataset.hcaId = id;
 }
 
 function notifyAim() {
