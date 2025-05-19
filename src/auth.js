@@ -262,7 +262,11 @@ export async function signIn(redirectStartPage, state) {
 
     const hcaId = localStorage.getItem("hcaid") || document.querySelector("body")?.dataset['hcaid'];
     if (hcaId) {
-        loginRequest.extraQueryParameters = { userID: hcaId };
+        if (typeof loginRequest.extraQueryParameters === 'object' && loginRequest.extraQueryParameters !== null) {
+            loginRequest.extraQueryParameters = { ...loginRequest.extraQueryParameters, userID: hcaId };
+        } else {
+            loginRequest.extraQueryParameters = { userID: hcaId };
+        }
     }
 
     myMSALObj.loginRedirect(loginRequest);
