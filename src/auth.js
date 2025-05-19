@@ -263,9 +263,9 @@ export async function signIn(redirectStartPage, state) {
     const hcaId = localStorage.getItem("hcaid") || document.querySelector("body")?.dataset['hcaid'];
     if (hcaId) {
         if (typeof loginRequest.extraQueryParameters === 'object' && loginRequest.extraQueryParameters !== null) {
-            loginRequest.extraQueryParameters = { ...loginRequest.extraQueryParameters, userID: hcaId };
+            loginRequest.extraQueryParameters = { ...loginRequest.extraQueryParameters, hca_id: hcaId };
         } else {
-            loginRequest.extraQueryParameters = { userID: hcaId };
+            loginRequest.extraQueryParameters = { hca_id: hcaId };
         }
     }
 
