@@ -59,7 +59,7 @@ export async function setHcaSdkConfig(clientId,
     displaySignInButton = true,
     displaySignUpButton = true,
     scopes = ["https://auth.onekeyconnect.com/x/profile.basic"],
-    knownAuthorities = ["auth.healthcaresdks.com"],
+    knownAuthorities = ["auth.hcn.health"],
     tenantDomain = "auth.onekeyconnect.com",
     policyId = "b2c_1a_hca_signup_signin",
     signupPolicyId = "b2c_1a_hca_signuponly",
@@ -84,7 +84,8 @@ export async function setHcaSdkConfig(clientId,
         //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
         authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
     } else {
-        authority = "https://" + knownAuthorities[0]
+        authority = "https://" + knownAuthorities[0] + '/hca'
+        msalConfig.auth.protocolMode = msal.ProtocolMode.OIDC
     }
     msalConfig.auth.authority = authority;
 
@@ -95,7 +96,7 @@ export async function setHcaSdkConfig(clientId,
     if (redirectURL) {
         msalConfig.auth.redirectUri = redirectURL;
     }
-
+    
     // Api config
     apiConfig.subscriptionKey = apimSubscriptionKey;
     apiConfig.endpoint = apiBasePath;
@@ -112,7 +113,7 @@ export async function setHcaSdkConfig(clientId,
         // authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
         signupAuthority = "https://" + firstKnownAuthority + "/" + tenantDomain + "/" + signupPolicyId;
     } else {
-        signupAuthority = "https://" + firstKnownAuthority
+        signupAuthority = "https://" + firstKnownAuthority + '/hca'
     }
 
     signUpFlowRequest.authority = signupAuthority;
