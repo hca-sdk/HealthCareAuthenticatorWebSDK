@@ -41,8 +41,7 @@ function initEvents() {
 function runSigninProcess() {
     const params = new URLSearchParams(document.location.search);
     const hcaId = params.get("hca_id");
-    const signin = params.get("signin");
-    if (hcaId && signin) {
+    if (hcaId) {
         saveHcaId(hcaId);
         displayLoadingOverlay();
         signIn();
