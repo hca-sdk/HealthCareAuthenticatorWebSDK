@@ -13,9 +13,6 @@ let aimApiKey;
 let aimCssSelector;
 
 export function initAIM(apiKey, cssSelector) {
-    if (runSigninProcess()) {
-        return;
-    }
     if (arguments.length !== 2) {
         console.error("Error: initAIM function expects 2 arguments: AIM API key and AIM sign-in element selector.");
         return;
@@ -26,6 +23,9 @@ export function initAIM(apiKey, cssSelector) {
     }
     aimApiKey = apiKey;
     aimCssSelector = cssSelector;
+    if (runSigninProcess()) {
+        return;
+    }
     initEvents();
     setAimSignalListener();
 }
@@ -41,7 +41,8 @@ function initEvents() {
 function runSigninProcess() {
     const params = new URLSearchParams(document.location.search);
     const hcaId = params.get("hca_id");
-    if (hcaId) {
+    const signin = params.get("signin");
+    if (hcaId && signin) {
         saveHcaId(hcaId);
         displayLoadingOverlay();
         signIn();
@@ -112,9 +113,7 @@ async function resolveUserIdentity(data) {
 
 function saveHcaId(id) {
     localStorage.setItem("hcaid", id);
-    if (aimCssSelector) {
-        document.querySelector(aimCssSelector).dataset.hcaId = id;
-    }
+    document.querySelector(aimCssSelector).dataset.hcaId = id;
 }
 
 function notifyAim(hcaId) {
