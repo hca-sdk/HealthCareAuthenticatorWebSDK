@@ -112,7 +112,9 @@ async function resolveUserIdentity(data) {
 
 function saveHcaId(id) {
     localStorage.setItem("hcaid", id);
-    document.querySelector(aimCssSelector).dataset.hcaId = id;
+    if (aimCssSelector) {
+        document.querySelector(aimCssSelector).dataset.hcaId = id;
+    }
 }
 
 function notifyAim(hcaId) {
