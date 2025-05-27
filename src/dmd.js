@@ -13,12 +13,7 @@ let aimApiKey;
 let aimCssSelector;
 
 export function initAIM(apiKey, cssSelector) {
-    if (arguments.length !== 2) {
-        console.error("Error: initAIM function expects 2 arguments: AIM API key and AIM sign-in element selector.");
-        return;
-    }
-    if (document.querySelector(cssSelector) == null) {
-        console.error(`Error: CSS selector "${cssSelector}" does not match any HTML element in the page.`);
+    if (arguments.length !== 2 && !document.querySelector(cssSelector)) {
         return;
     }
     aimApiKey = apiKey;
@@ -38,12 +33,21 @@ function initEvents() {
     });
 }
 
+function removeQueryParam(param) {
+    const url = new URL(window.location);
+    url.searchParams.delete(param);
+    window.history.replaceState({}, "", url);
+}
+
 function runSigninProcess() {
     const params = new URLSearchParams(document.location.search);
     const hcaId = params.get("hca_id");
     if (hcaId) {
         saveHcaId(hcaId);
         displayLoadingOverlay();
+        // Remove hca_id param from url to prevent following B2C process to redirect to that same url,
+        // so it does not trigger once again the sign in process
+        removeQueryParam('hca_id');
         signIn();
         return true;
     }
@@ -61,7 +65,7 @@ function setAimSignalListener() {
             const response = await resolveUserIdentity(payload);
             const hcaId = response?.hca_id;
             if (!hcaId) {
-                console.error("Error: Identity resolver have not returned any HCA Id.");
+                console.error("Error: Identity resolver has not returned any HCA Id.");
                 return;
             }
             saveHcaId(hcaId);
