@@ -58,23 +58,23 @@ function setAimSignalListener() {
         if (error) {
             console.error("Error: AIM signal has failed.", error);
             return;
+        } else if (data !== null && typeof data === 'object' && aimIdentityTypes.includes(data?.identity_type)) {
+                const payload = formatPayload(data);
+                const response = await resolveUserIdentity(payload);
+                const hcaId = response?.hca_id;
+                if (!hcaId) {
+                    console.error("Error: Identity resolver has not returned any HCA Id.");
+                    return;
+                }
+                saveHcaId(hcaId);
+                notifyAim(hcaId);
+                // For DEV/UAT testing purpose only
+                if (testEnvs.includes(ENVIRONMENT)) {
+                    sendResponseToDemoAppWidget(data, response);
+                }
+            }  
         }
-        if (aimIdentityTypes.includes(data?.identity_type)) {
-            const payload = formatPayload(data);
-            const response = await resolveUserIdentity(payload);
-            const hcaId = response?.hca_id;
-            if (!hcaId) {
-                console.error("Error: Identity resolver has not returned any HCA Id.");
-                return;
-            }
-            saveHcaId(hcaId);
-            notifyAim(hcaId);
-            // For DEV/UAT testing purpose only
-            if (testEnvs.includes(ENVIRONMENT)) {
-                sendResponseToDemoAppWidget(data, response);
-            }
-        }
-    });
+    );
 }
 
 function formatPayload(data) {
