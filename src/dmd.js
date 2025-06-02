@@ -4,7 +4,7 @@ import { displayLoadingOverlay } from './ui.js';
 const testEnvs = ["dev", "uat"];
 const aimIdentityTypes = ["AUT", "POI", "UNK"];
 
-if (typeof ENVIRONMENT !== "undefined" && testEnvs.includes(ENVIRONMENT)) {
+if (typeof ENVIRONMENT !== "undefined" && matchesTestEnvs()) {
     aimIdentityTypes.push("TST");
 }
 
@@ -69,7 +69,7 @@ function setAimSignalListener() {
                 saveHcaId(hcaId);
                 notifyAim(hcaId);
                 // For DEV/UAT testing purpose only
-                if (testEnvs.includes(ENVIRONMENT)) {
+                if (matchesTestEnvs()) {
                     sendResponseToDemoAppWidget(data, response);
                 }
             }  
@@ -120,6 +120,10 @@ function saveHcaId(id) {
 
 function notifyAim(hcaId) {
     aimTag(aimApiKey, 'authenticate', { hca_id: hcaId });
+}
+
+function matchesTestEnvs() {
+    return testEnvs.some(env => ENVIRONMENT.startsWith(env));
 }
 
 /**
