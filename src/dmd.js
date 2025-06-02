@@ -1,11 +1,10 @@
 import { apiConfig, clientLocale, signIn } from './auth.js';
 import { displayLoadingOverlay } from './ui.js';
-import { ENVIRONMENT } from './env.js';
 
 const testEnvs = ["dev", "uat"];
 const aimIdentityTypes = ["AUT", "POI", "UNK"];
 
-if (testEnvs.includes(ENVIRONMENT)) {
+if (typeof ENVIRONMENT !== "undefined" && testEnvs.includes(ENVIRONMENT)) {
     aimIdentityTypes.push("TST");
 }
 

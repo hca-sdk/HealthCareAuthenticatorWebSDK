@@ -317,7 +317,7 @@ export function displayLoadingOverlay() {
         zIndex: 9999
     });
     const spinner = document.createElement('img');
-    spinner.src = "https://form-generator.dev.healthcaresdks.com/spinner_light.svg";
+    spinner.src = "./spinner_light.svg";
     Object.assign(spinner.style, {
         width: '96px',
         height: '96px'
