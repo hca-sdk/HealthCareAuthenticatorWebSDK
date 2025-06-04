@@ -1,1 +1,1 @@
-export const ENVIRONMENT = 'dev';
+export const ENVIRONMENT = '__ENVIRONMENT__';

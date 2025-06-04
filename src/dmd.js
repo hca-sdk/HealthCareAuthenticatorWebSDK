@@ -1,32 +1,27 @@
 import { apiConfig, clientLocale, signIn } from './auth.js';
 import { displayLoadingOverlay } from './ui.js';
+import { ENVIRONMENT } from './env.js';
 
-const testEnvs = ["dev", "uat"];
 const aimIdentityTypes = ["AUT", "POI", "UNK"];
 
-if (typeof ENVIRONMENT !== "undefined" && isTestEnv()) {
+if (isTestEnv()) {
     aimIdentityTypes.push("TST");
 }
-
-let aimApiKey;
-let aimCssSelector;
 
 export function initAIM(apiKey, cssSelector) {
     if (arguments.length !== 2 && !document.querySelector(cssSelector)) {
         return;
     }
-    aimApiKey = apiKey;
-    aimCssSelector = cssSelector;
-    if (runSigninProcess()) {
+    if (runSigninProcess(cssSelector)) {
         return;
     }
-    initEvents();
-    setAimSignalListener();
+    initEvents(cssSelector);
+    setAimSignalListener(apiKey, cssSelector);
 }
 
-function initEvents() {
+function initEvents(cssSelector) {
     // Handling click event for AIM sign-in element
-    document.querySelector(aimCssSelector).addEventListener("click", (event) => {
+    document.querySelector(cssSelector).addEventListener("click", (event) => {
         event.preventDefault();
         signIn();
     });
@@ -38,23 +33,23 @@ function removeQueryParam(param) {
     window.history.replaceState({}, "", url);
 }
 
-function runSigninProcess() {
+function runSigninProcess(cssSelector) {
     const params = new URLSearchParams(document.location.search);
     const hcaId = params.get("hca_id");
     if (hcaId) {
-        saveHcaId(hcaId);
+        saveHcaId(hcaId, cssSelector);
         displayLoadingOverlay();
         // Remove hca_id param from url to prevent following B2C process to redirect to that same url,
         // so it does not trigger once again the sign in process
-        removeQueryParam('hca_id');
+        removeQueryParam("hca_id");
         signIn();
         return true;
     }
     return false;
 }
 
-function setAimSignalListener() {
-    aimTag(aimApiKey, "signal", async (error, data) => {
+function setAimSignalListener(apiKey, cssSelector) {
+    aimTag(apiKey, "signal", async (error, data) => {
         if (error) {
             console.error("Error: AIM signal has failed.", error);
             return;
@@ -66,11 +61,11 @@ function setAimSignalListener() {
                     console.error("Error: Identity resolver has not returned any HCA Id.");
                     return;
                 }
-                saveHcaId(hcaId);
-                notifyAim(hcaId);
+                saveHcaId(hcaId, cssSelector);
+                notifyAim(apiKey, hcaId);
                 // For DEV/UAT testing purpose only
                 if (isTestEnv()) {
-                    sendResponseToDemoAppWidget(data, response);
+                    sendResponseEvent(data, response);
                 }
             }  
         }
@@ -87,8 +82,8 @@ function formatPayload(data) {
         last_name: last_name,
         locale: clientLocale,
         postal_code: zip_code,
-        professional_type: professional_designation,
-        specialty: primary_specialty_code,
+        //professional_type: professional_designation,
+        //specialty: primary_specialty_code,
         state: state,
         uci: npi_number
     };
@@ -113,30 +108,29 @@ async function resolveUserIdentity(data) {
     }
 }
 
-function saveHcaId(id) {
+function saveHcaId(id, cssSelector) {
     localStorage.setItem("hcaid", id);
-    document.querySelector(aimCssSelector).dataset.hcaId = id;
+    document.querySelector(cssSelector).dataset.hcaId = id;
 }
 
-function notifyAim(hcaId) {
-    aimTag(aimApiKey, 'authenticate', { hca_id: hcaId });
+function notifyAim(apiKey, hcaId) {
+    aimTag(apiKey, 'authenticate', { hca_id: hcaId });
 }
 
 function isTestEnv() {
-    return testEnvs.some(env => ENVIRONMENT.startsWith(env));
+    return ["dev", "uat"].some(env => ENVIRONMENT.toLowerCase().includes(env));
 }
 
 /**
  * For DEV/UAT testing purpose only.
  * Need testing widget to be present in demo app.
  */
-function sendResponseToDemoAppWidget(data, response) {
-    const signalInput = document.getElementById('signal');
-    const responseInput = document.getElementById('response');
-    if (signalInput == null || responseInput == null) {
-        console.error("Error: Cannot find testing widget elements in the page.");
-        return;
-    }
-    signalInput.innerText = JSON.stringify(data, null, 2);
-    responseInput.innerText = JSON.stringify(response, null, 2);
-}
+function sendResponseEvent(data, response) {
+    const customEvent = new CustomEvent("hcaIdReceived", {
+        detail: {
+            data: JSON.stringify(data, null, 2),
+            response: JSON.stringify(response, null, 2)
+        }
+    });
+    document.dispatchEvent(customEvent);
+};
