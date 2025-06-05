@@ -1,1 +1,1 @@
-export const ENVIRONMENT = '__ENVIRONMENT__';
+export const ENVIRONMENT = '#{ENVIRONMENT}#';
