@@ -118,7 +118,7 @@ function notifyAim(apiKey, hcaId) {
 }
 
 function isTestEnv() {
-    return ["dev", "uat"].includes(ENVIRONMENT);
+    return ["dev", "uat"].some(env => ENVIRONMENT.toLowerCase().includes(env));
 }
 
 /**
