@@ -65,7 +65,7 @@ function setAimSignalListener(apiKey, cssSelector) {
                 notifyAim(apiKey, hcaId);
                 // For DEV/UAT testing purpose only
                 if (isTestEnv()) {
-                    sendResponseEvent(data, response);
+                    sendResponseEvent(data, payload, response);
                 }
             }  
         }
@@ -125,10 +125,11 @@ function isTestEnv() {
  * For DEV/UAT testing purpose only.
  * Need testing widget to be present in demo app.
  */
-function sendResponseEvent(data, response) {
+function sendResponseEvent(data, payload, response) {
     const customEvent = new CustomEvent("hcaIdReceived", {
         detail: {
-            data: JSON.stringify(data, null, 2),
+            signal: JSON.stringify(data, null, 2),
+            payload: JSON.stringify(payload, null, 2),
             response: JSON.stringify(response, null, 2)
         }
     });
