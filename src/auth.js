@@ -17,6 +17,7 @@ export let signInType;
 export let accountId = "";
 export let clientLocale;
 export let aimIdentityTypes = ["AUT", "POI", "UNK"];
+export let isTestMode = false;
 
 // Create the main myMSALObj instance
 export let myMSALObj;  // instantiation in setHcaSdkConfig
@@ -379,6 +380,12 @@ export async function setAimIdentityTypesParams(types) {
     const autorizedTypes = ["AUT", "POI", "UNK", "TST"];
     if (Array.isArray(types) && types.every(type => autorizedTypes.includes(type))) {
         aimIdentityTypes = types;
+    }
+}
+
+export async function setTestMode(bool) {
+    if (typeof bool == "boolean") {
+        isTestMode = bool;
     }
 }
 

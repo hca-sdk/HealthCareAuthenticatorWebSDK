@@ -1,4 +1,4 @@
-import { aimIdentityTypes, apiConfig, clientLocale, signIn } from './auth.js';
+import { aimIdentityTypes, apiConfig, clientLocale, isTestMode, signIn } from './auth.js';
 import { displayLoadingOverlay } from './ui.js';
 
 export function initAIM(apiKey, cssSelector) {
@@ -57,7 +57,7 @@ function setAimSignalListener(apiKey, cssSelector) {
                 saveHcaId(hcaId, cssSelector);
                 notifyAim(apiKey, hcaId);
                 // For DEV/UAT testing purpose only
-                if (isTestEnv()) {
+                if (isTestMode) {
                     sendResponseEvent(data, payload, response);
                 }
             }  
@@ -110,10 +110,7 @@ function notifyAim(apiKey, hcaId) {
     aimTag(apiKey, 'authenticate', { hca_id: hcaId });
 }
 
-/**
- * For DEV/UAT testing purpose only.
- * Need testing widget to be present in demo app.
- */
+// Needs the HCA/AIM XR widget activated in demo app to listen to this custom event and display debugging data
 function sendResponseEvent(data, payload, response) {
     const customEvent = new CustomEvent("hcaIdReceived", {
         detail: {
