@@ -70,33 +70,35 @@
   </body>
 
 ```
-  The parameter `&lt;clientId&gt;` must have be filled with the value provided during registration.
+  The parameter `<clientId>` must have be filled with the value provided during registration.
 
-  The parameter `&lt;displaySignInButton&gt;` must have the value true to display the SignIn button false otherwise with a default value set to true.
+  The parameter `<displaySignInButton>` must have the value true to display the SignIn button false otherwise with a default value set to true.
 
-  The parameter `&lt;displaySignUpButton&gt;` must have the value true to display the SignUp button false otherwise with a default value set to true.
+  The parameter `<displaySignUpButton>` must have the value true to display the SignUp button false otherwise with a default value set to true.
 
-  The Parameter `&lt;scopes&gt;` is an array and has a default value set to ["https://auth.onekeyconnect.com/user/profile.basic"].
+  The Parameter `<scopes>` is an array and has a default value set to ["https://auth.onekeyconnect.com/user/profile.basic"].
 
-  The Parameter `&lt;knownAuthorities&gt;` is an array and has a default value set to ["auth.onekeyconnect.com"].
+  The Parameter `<knownAuthorities>` is an array and has a default value set to ["auth.onekeyconnect.com"].
 
-  The Parameter `&lt;tenantDomain&gt;` has a default value set to "auth.onekeyconnect.com".
+  The Parameter `<tenantDomain>` has a default value set to "auth.onekeyconnect.com".
 
-  The Parameter `&lt;policyId&gt;` has a default value set to "B2C_1A_HCA_SIGNUP_SIGNIN".
+  The Parameter `<policyId>` has a default value set to "B2C_1A_HCA_SIGNUP_SIGNIN".
 
-  The Parameter `&lt;signupPolicyId&gt;` has a default value set to "B2C_1A_HCA_SIGNUPONLY".
+  The Parameter `<signupPolicyId>` has a default value set to "B2C_1A_HCA_SIGNUPONLY".
 
-  The Parameter `&lt;apimSubscriptionKey&gt;` has a default value. *Do not change it*.
+  The Parameter `<apimSubscriptionKey>` has a default value. *Do not change it*.
 
-  The Parameter `&lt;apiBasePath&gt;` has a default value. *Do not change it*.
+  The Parameter `<apiBasePath>` has a default value. *Do not change it*.
 
-  The Parameter &lt;expiredUrl&gt; could be filled with url link, which to be redirected to, when Magic-link has expired.
+  The Parameter `<expiredUrl>` could be filled with url link, which to be redirected to, when Magic-link has expired.
 
-  The Parameter &lt;redirectUrl&gt; could be filled with url link, which to be redirected to, after user logged in.
+  The Parameter `<redirectUrl>` could be filled with url link, which to be redirected to, after user logged in.
 
-  The Parameter &lt;postLogoutRedirectUri&gt; could be filled with url link, which to be redirected to, after user logged out.
+  The Parameter `<postLogoutRedirectUri>` could be filled with url link, which to be redirected to, after user logged out.
 
-  The Parameter &lt;isLoginPopup&gt; the config to enabling loginPopup instead of loginRedirect on button signIn and signUp render by hcaSdk, default to false.
+  The Parameter `<isLoginPopup>` the config to enabling loginPopup instead of loginRedirect on button signIn and signUp render by hcaSdk, default to false.
+  
+  The Parameter `<isLoginPopup>` the config to enabling loginPopup instead of loginRedirect on button signIn and signUp render by hcaSdk, default to false.
 
   4. Define the return function to handle the login
 
@@ -216,6 +218,8 @@ To use HCA AIM XR feature along with HCA SDK JS, you need to:
     window.aimDataLayer = window.aimDataLayer || [];
     function aimTag() { aimDataLayer.push(arguments); }
     window.addEventListener("load", function() {
+      hcaSdk.setLocaleParams("en-US");
+      hcaSdk.setAimIdentityTypesParams(["AUT", "POI"]);
       hcaSdk.initAIM("<aimApiKey>"", "<elementSelector>");
     }, false);
   </script>
@@ -224,5 +228,6 @@ Once your page is loaded, this JS script will run AIM XR aimTag "signal" functio
 As soon as it captures user data, it will be processed within HCA system (e.g. create user).
 
 * Notes:
-  * `<elementSelector>` can be any kind of selector (Id, class name, tag name...), just be careful that it is unique, and can represent any kind of HTML element (button, hyperlink, image...).
-  * `hcaSdk.setLocaleParams(<locale>)` must be called before `hcaSdk.initAIM(<aimApiKey>)` is called so it can take advantage of that locale.
+  * `<elementSelector>` can be any kind of selector (id, class name, tag name...) for any kind of HTML element (button, hyperlink, image...), but it must be unique.
+  * Functions `hcaSdk.setLocaleParams(<locale>)` and `hcaSdk.setAimIdentityTypesParams(<types>)` can be called before `hcaSdk.initAIM(<aimApiKey>)` is called so it can take advantage of the locale and AIM XR identity types you want the HCA SDK JS to react to.
+  * `hcaSdk.setAimIdentityTypesParams(<types>)` takes as parameter an array of strings among "AUT", "POI", "UNK" and "TST". If the function is not called, default value is `["AUT", "POI", "UNK"]`.
