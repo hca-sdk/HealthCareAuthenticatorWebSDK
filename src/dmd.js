@@ -1,12 +1,5 @@
-import { apiConfig, clientLocale, signIn } from './auth.js';
+import { aimIdentityTypes, apiConfig, clientLocale, signIn } from './auth.js';
 import { displayLoadingOverlay } from './ui.js';
-import { ENVIRONMENT } from './env.js';
-
-const aimIdentityTypes = ["AUT", "POI", "UNK"];
-
-if (isTestEnv()) {
-    aimIdentityTypes.push("TST");
-}
 
 export function initAIM(apiKey, cssSelector) {
     if (arguments.length !== 2 && !document.querySelector(cssSelector)) {
@@ -115,10 +108,6 @@ function saveHcaId(id, cssSelector) {
 
 function notifyAim(apiKey, hcaId) {
     aimTag(apiKey, 'authenticate', { hca_id: hcaId });
-}
-
-function isTestEnv() {
-    return ["dev", "uat"].some(env => ENVIRONMENT.toLowerCase().includes(env));
 }
 
 /**

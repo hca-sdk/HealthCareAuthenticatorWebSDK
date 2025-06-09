@@ -16,6 +16,7 @@ import {
 export let signInType;
 export let accountId = "";
 export let clientLocale;
+export let aimIdentityTypes = ["AUT", "POI", "UNK"];
 
 // Create the main myMSALObj instance
 export let myMSALObj;  // instantiation in setHcaSdkConfig
@@ -371,6 +372,12 @@ export async function setStateParams(state) {
     if (typeof state == 'string' && !!state) {
         loginRequest.state = state;
         signUpFlowRequest.state = state;
+    }
+}
+export async function setAimIdentityTypesParams(types) {
+    const autorizedTypes = ["AUT", "POI", "UNK", "TST"];
+    if (types.isArray() && types.every(type => autorizedTypes.includes(type))) {
+        aimIdentityTypes = types;
     }
 }
 
