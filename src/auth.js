@@ -374,9 +374,10 @@ export async function setStateParams(state) {
         signUpFlowRequest.state = state;
     }
 }
+
 export async function setAimIdentityTypesParams(types) {
     const autorizedTypes = ["AUT", "POI", "UNK", "TST"];
-    if (types.isArray() && types.every(type => autorizedTypes.includes(type))) {
+    if (Array.isArray(types) && types.every(type => autorizedTypes.includes(type))) {
         aimIdentityTypes = types;
     }
 }
