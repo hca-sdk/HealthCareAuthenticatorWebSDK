@@ -69,7 +69,7 @@ function formatPayload(data) {
     const { country_code, dgid, email, first_name, last_name, npi_number, primary_specialty_code, professional_designation, state, zip_code } = data;
     return {
         external_id: dgid,
-        email: email,
+        business_email: email,
         first_name: first_name, 
         iso_country: country_code,
         last_name: last_name,
