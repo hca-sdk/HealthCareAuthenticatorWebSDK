@@ -1,44 +1,25 @@
 import { aimIdentityTypes, apiConfig, clientLocale, isTestMode, signIn } from './auth.js';
-import { displayLoadingOverlay } from './ui.js';
+
+export let HCA_ID;
 
 export function initAIM(apiKey, cssSelector) {
     if (arguments.length !== 2 && !document.querySelector(cssSelector)) {
+        console.error("Error: initAIM function expects 2 arguments: <aimApiKey>, <elementSelector>");
         return;
     }
-    if (runSigninProcess(cssSelector)) {
-        return;
-    }
-    initEvents(cssSelector);
+    configureButton(cssSelector);
     setAimSignalListener(apiKey, cssSelector);
 }
 
-function initEvents(cssSelector) {
+function configureButton(cssSelector) {
+    const button = document.querySelector(cssSelector);
+    // Hidding button by default so user cannot click on it before identity resolving succeeded
+    button.style.display = "none";
     // Handling click event for AIM sign-in element
-    document.querySelector(cssSelector).addEventListener("click", (event) => {
+    button.addEventListener("click", (event) => {
         event.preventDefault();
         signIn();
     });
-}
-
-function removeQueryParam(param) {
-    const url = new URL(window.location);
-    url.searchParams.delete(param);
-    window.history.replaceState({}, "", url);
-}
-
-function runSigninProcess(cssSelector) {
-    const params = new URLSearchParams(document.location.search);
-    const hcaId = params.get("hca_id");
-    if (hcaId) {
-        saveHcaId(hcaId, cssSelector);
-        displayLoadingOverlay();
-        // Remove hca_id param from url to prevent following B2C process to redirect to that same url,
-        // so it does not trigger once again the sign in process
-        removeQueryParam("hca_id");
-        signIn();
-        return true;
-    }
-    return false;
 }
 
 function setAimSignalListener(apiKey, cssSelector) {
@@ -54,8 +35,12 @@ function setAimSignalListener(apiKey, cssSelector) {
                     console.error("Error: Identity resolver has not returned any HCA Id.");
                     return;
                 }
-                saveHcaId(hcaId, cssSelector);
+                // Saving HCA Id so it can be used later in auth file 
+                HCA_ID = hcaId;
                 notifyAim(apiKey, hcaId);
+                // Showing button so user can start login process
+                const button = document.querySelector(cssSelector);
+                button.style.display = "show";
                 // For DEV/UAT testing purpose only
                 if (isTestMode) {
                     sendResponseEvent(data, payload, response);
@@ -99,11 +84,6 @@ async function resolveUserIdentity(data) {
         console.error("Error: Identity resolver request has failed.", error);
         return {};
     }
-}
-
-function saveHcaId(id, cssSelector) {
-    localStorage.setItem("hcaid", id);
-    document.querySelector(cssSelector).dataset.hcaId = id;
 }
 
 function notifyAim(apiKey, hcaId) {

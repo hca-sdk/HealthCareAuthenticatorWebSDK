@@ -1,4 +1,5 @@
 import * as msal from '@azure/msal-browser';
+import { HCA_ID } from './dmd.js';
 import {
     loginCallBack,
     tokenCallBack,
@@ -263,12 +264,11 @@ export async function signIn(redirectStartPage, state) {
         loginRequest.state = state
     }
 
-    const hcaId = localStorage.getItem("hcaid") || document.querySelector("body")?.dataset['hcaid'];
-    if (hcaId) {
+    if (HCA_ID) {
         if (typeof loginRequest.extraQueryParameters === 'object' && loginRequest.extraQueryParameters !== null) {
-            loginRequest.extraQueryParameters = { ...loginRequest.extraQueryParameters, hca_id: hcaId };
+            loginRequest.extraQueryParameters = { ...loginRequest.extraQueryParameters, hca_id: HCA_ID };
         } else {
-            loginRequest.extraQueryParameters = { hca_id: hcaId };
+            loginRequest.extraQueryParameters = { hca_id: HCA_ID };
         }
     }
 
