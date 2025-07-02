@@ -14,7 +14,7 @@ export function initAIM(apiKey, cssSelector) {
 function configureButton(cssSelector) {
     const button = document.querySelector(cssSelector);
     // Hidding button by default so user cannot click on it before identity resolving succeeded
-    button.style.display = "none";
+    button.style.visibility = "hidden";
     // Handling click event for AIM sign-in element
     button.addEventListener("click", (event) => {
         event.preventDefault();
@@ -40,7 +40,7 @@ function setAimSignalListener(apiKey, cssSelector) {
                 notifyAim(apiKey, hcaId);
                 // Showing button so user can start login process
                 const button = document.querySelector(cssSelector);
-                button.style.display = "block";
+                button.style.visibility = "visible";
                 // For DEV/UAT testing purpose only
                 if (isTestMode) {
                     sendResponseEvent(data, payload, response);
