@@ -40,7 +40,7 @@ function setAimSignalListener(apiKey, cssSelector) {
                 notifyAim(apiKey, hcaId);
                 // Showing button so user can start login process
                 const button = document.querySelector(cssSelector);
-                button.style.display = "show";
+                button.style.display = "block";
                 // For DEV/UAT testing purpose only
                 if (isTestMode) {
                     sendResponseEvent(data, payload, response);
