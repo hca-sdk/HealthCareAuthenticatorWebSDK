@@ -1,25 +1,26 @@
 import { aimIdentityTypes, apiConfig, clientLocale, isTestMode, signIn } from './auth.js';
 
-export let HCA_ID;
-
 export function initAIM(apiKey, cssSelector) {
     if (arguments.length !== 2 && !document.querySelector(cssSelector)) {
         console.error("Error: initAIM function expects 2 arguments: <aimApiKey>, <elementSelector>");
         return;
     }
-    configureButton(cssSelector);
+    configureLoginButton(cssSelector);
     setAimSignalListener(apiKey, cssSelector);
 }
 
-function configureButton(cssSelector) {
+function configureLoginButton(cssSelector) {
     const button = document.querySelector(cssSelector);
-    // Hidding button by default so user cannot click on it before identity resolving succeeded
     button.style.visibility = "hidden";
-    // Handling click event for AIM sign-in element
     button.addEventListener("click", (event) => {
         event.preventDefault();
         signIn();
     });
+}
+
+function showLoginButton(cssSelector) {
+    const button = document.querySelector(cssSelector);
+    button.style.visibility = "visible";
 }
 
 function setAimSignalListener(apiKey, cssSelector) {
@@ -35,12 +36,9 @@ function setAimSignalListener(apiKey, cssSelector) {
                     console.error("Error: Identity resolver has not returned any HCA Id.");
                     return;
                 }
-                // Saving HCA Id so it can be used later in auth file 
-                HCA_ID = hcaId;
+                saveHcaId(hcaId, cssSelector);
                 notifyAim(apiKey, hcaId);
-                // Showing button so user can start login process
-                const button = document.querySelector(cssSelector);
-                button.style.visibility = "visible";
+                showLoginButton(cssSelector);
                 // For DEV/UAT testing purpose only
                 if (isTestMode) {
                     sendResponseEvent(data, payload, response);
@@ -86,11 +84,15 @@ async function resolveUserIdentity(data) {
     }
 }
 
+function saveHcaId(id, cssSelector) {
+    localStorage.setItem("hcaid", id);
+    document.querySelector(cssSelector).dataset.hcaId = id;
+}
+
 function notifyAim(apiKey, hcaId) {
     aimTag(apiKey, 'authenticate', { hca_id: hcaId });
 }
 
-// Needs the HCA/AIM XR widget activated in demo app to listen to this custom event and display debugging data
 function sendResponseEvent(data, payload, response) {
     const customEvent = new CustomEvent("hcaIdReceived", {
         detail: {
