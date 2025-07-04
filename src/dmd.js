@@ -36,7 +36,7 @@ function setAimSignalListener(apiKey, cssSelector) {
                     console.error("Error: Identity resolver has not returned any HCA Id.");
                     return;
                 }
-                saveHcaId(hcaId, cssSelector);
+                saveHcaId(hcaId);
                 notifyAim(apiKey, hcaId);
                 showLoginButton(cssSelector);
                 // For DEV/UAT testing purpose only
@@ -84,9 +84,8 @@ async function resolveUserIdentity(data) {
     }
 }
 
-function saveHcaId(id, cssSelector) {
+function saveHcaId(id) {
     localStorage.setItem("hcaid", id);
-    document.querySelector(cssSelector).dataset.hcaId = id;
 }
 
 function notifyAim(apiKey, hcaId) {
