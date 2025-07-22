@@ -41,8 +41,8 @@ export async function getProfile(callback) {
         });
 
         if (response) {
-            const userProfileUrl = `${apiConfig.endpoint}/user/me/profile`;
-            callAPI(userProfileUrl, response.idToken, callback);
+            const userProfileUrl = `${apiConfig.endpoint}/user/me/profile?api-version=230505`;
+            callAPI(userProfileUrl, response.accessToken, callback);
         }
     }
 }
@@ -66,8 +66,8 @@ export async function getAccount(callback) {
         });
 
         if (response) {
-            const userProfileUrl = `${apiConfig.endpoint}/user/me/account`;
-            callAPI(userProfileUrl, response.idToken, callback);
+            const userProfileUrl = `${apiConfig.endpoint}/user/me/account?api-version=230505`;
+            callAPI(userProfileUrl, response.accessToken, callback);
         }
     }
 }
