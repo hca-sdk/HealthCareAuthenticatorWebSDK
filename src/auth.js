@@ -195,6 +195,7 @@ export async function setHcaSdkConfig(clientId,
                     cancelCallBack();
                     return;
                 }
+                redirectToLoginPage(scopes);
             }
             if (errorCallBack !== undefined) {
                 errorCallBack(err);
@@ -217,6 +218,11 @@ export async function setHcaSdkConfig(clientId,
                     cancelCallBack();
                     return;
                 }
+                // Fix for BUG-15045:
+                // When user clicks on Login link in the sign-up form, silently it triggers click on hidden B2C cancel button.
+                // If no cancel callback is configured in the SDK implementation, then SDK redirects to login form.
+                // Same applied in previous else-if block.
+                redirectToLoginPage(scopes);
             }
             if (errorCallBack !== undefined) {
                 errorCallBack(err);
@@ -403,3 +409,6 @@ function toggleButtons() {
     }
 }
 
+function redirectToLoginPage(scopes) {
+    myMSALObj.loginRedirect({ prompt: "login", scopes });
+}
