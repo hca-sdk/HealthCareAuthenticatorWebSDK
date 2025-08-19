@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 var copyWebpackPlugin = require('copy-webpack-plugin');
-const bundleOutputDir = '../dist';
+const bundleOutputDir = './dist';
 
 module.exports = (env) => {
     return [{

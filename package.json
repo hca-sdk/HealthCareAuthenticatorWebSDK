@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "build": "webpack --config webpack.config.js && rm -f ./sample-sdk-js/public/onekey-hca-sdk.js && cp ../dist/onekey-hca-sdk.js ./sample-sdk-js/public/onekey-hca-sdk.js"
+    "build": "webpack --config webpack.config.js && rm -f ./sample-sdk-js/public/onekey-hca-sdk.js && cp ./dist/onekey-hca-sdk.js ./sample-sdk-js/public/onekey-hca-sdk.js"
   },
   "author": "",
   "license": "",
