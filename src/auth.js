@@ -316,13 +316,17 @@ export function handleTokenResponse(response) {
 }
 
 export async function getAccessTokenSilent() {
+    let request = tokenRequest;
+    request.account = myMSALObj.getAccountByHomeId(accountId);
     try {
-        let request = tokenRequest;
-        request.account = myMSALObj.getAccountByHomeId(accountId);
         const response = await myMSALObj.acquireTokenSilent(request);
         handleTokenResponse(response);
+        return response
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        if (error instanceof msal.InteractionRequiredAuthError || error.errorCode === msal.BrowserAuthErrorCodes.monitorWindowTimeout) {
+            return myMSALObj.acquireTokenRedirect({...request, redirectUri: msalConfig.auth.redirectUri || '/'})
+        }
     }
 }
 
