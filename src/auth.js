@@ -49,7 +49,8 @@ export let tokenRequest = {
 // Request to call SignUp flow
 export let signUpFlowRequest = {
     scopes: [],
-    authority: ""
+    authority: "",
+    extraQueryParameters: {}
 };
 
 // Add here the endpoints for API services you would like to use.
@@ -91,6 +92,7 @@ export async function setHcaSdkConfig(clientId,
     
     let authority
     const isB2cAuthority = ["b2clogin.com", "onekeyconnect.com"].some(domain => firstKnownAuthority.indexOf(domain) != -1)
+
     if (isB2cAuthority) {
         //  authority: "https://<your-tenant>.b2clogin.com/<your-tenant>.onmicrosoft.com/<your-policyID>",
         authority = "https://" + knownAuthorities[0] + "/" + tenantDomain + "/" + policyId;
@@ -125,8 +127,8 @@ export async function setHcaSdkConfig(clientId,
         signupAuthority = "https://" + firstKnownAuthority + "/" + tenantDomain + "/" + signupPolicyId;
     } else {
         signupAuthority = "https://" + firstKnownAuthority + '/hca'
+        signUpFlowRequest.extraQueryParameters = { ...signUpFlowRequest.extraQueryParameters, flow: "signup" };
     }
-
     signUpFlowRequest.authority = signupAuthority;
     signUpFlowRequest.scopes = scopes.slice();
 
@@ -357,7 +359,7 @@ export async function setLocaleParams(locale) {
     if (typeof locale == 'string' && !!locale) {
         clientLocale = locale;
         loginRequest.extraQueryParameters = { ui_locales: locale, locale };
-        signUpFlowRequest.extraQueryParameters = { ui_locales: locale, locale };
+        signUpFlowRequest.extraQueryParameters = { ...signUpFlowRequest.extraQueryParameters, ui_locales: locale, locale };
         return;
     }
     
