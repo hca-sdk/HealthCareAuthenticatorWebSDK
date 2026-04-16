@@ -180,6 +180,7 @@ export async function setHcaSdkConfig(clientId,
             code: code,
             scopes: scopes,
             codeVerifier: verifier,
+            state: state
         };
         try {
             myMSALObj = new msal.PublicClientApplication(msalConfig);
