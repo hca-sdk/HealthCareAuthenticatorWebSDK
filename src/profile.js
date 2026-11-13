@@ -7,8 +7,7 @@ export function callAPI(endpoint, token, callback) {
     const headers = new Headers();
     const bearer = `Bearer ${token}`;
 
-    headers.append("Authorization", bearer);
-    headers.append("Ocp-Apim-Subscription-Key", apiConfig.subscriptionKey);
+    headers.append("Authorization", bearer);    
 
     const options = {
         method: "GET",
